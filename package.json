@@ -1,0 +1,19 @@
+{
+  "name": "falconsocial",
+  "version": "0.0.0",
+  "description": "Falcon Social interview project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sorin-davidoi/falconsocial.git"
+  },
+  "author": "Sorin Adrian Robert Davidoi",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/sorin-davidoi/falconsocial/issues"
+  },
+  "homepage": "https://github.com/sorin-davidoi/falconsocial#readme"
+}
