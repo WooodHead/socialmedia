@@ -1,7 +1,11 @@
 # falconsocial
 
 ## API
-* ```POST /api/item```
-* ```GET /api/item/:id```
-* ```PUT /api/item/:id```
-* ```DELETE /api/item/:id```
+```GET /api/items/```
+```PUT /api/items/```
+```POST /api/items/```
+```DELETE /api/items/```
+
+```GET /api/items/:id```
+```PUT /api/items/:id```
+```DELETE /api/items/:id```
