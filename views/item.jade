@@ -1,19 +1,25 @@
-ul.card.card-block(id='{{item.id}}')
-  img.card-img-top(src='{{item.content.media.url}}')
+div.card.card-block(id='{{item.id}}')
+  //- img.card-img-top(src='{{item.content.media.url}}')
   //- li Id: {{item.id}}
-  li Content:
-    ul
-      li Message {{item.content.message}}
-      li Id: {{item.content.id}}
-      li Network: {{item.content.network}}
-      li PostType: {{item.content.postType}}
-      li Media:
-        ul
-          li FileName: {{item.content.media.fileName}}
-          li FileUrl: {{item.content.media.fileUrl}}
-          li Url: {{item.content.media.url}}
-  li Tags:
-    ul
-      li(ng-repeat='tag in item.tags track by $index') {{tag}}
-  li Status: {{item.status}}
+  //- li Content:
+  //-   ul
+  //-     li Message {{item.content.message}}
+  //-     li Id: {{item.content.id}}
+  //-     li Network: {{item.content.network}}
+  //-     li PostType: {{item.content.postType}}
+  //-     li Media:
+  //-       ul
+  //-         li FileName: {{item.content.media.fileName}}
+  //-         li FileUrl: {{item.content.media.fileUrl}}
+  //-         li Url: {{item.content.media.url}}
+  //- li Tags:
+  //-   ul
+  //-     li(ng-repeat='tag in item.tags track by $index') {{tag}}
+  //- li Status: {{item.status}}
   li Scheduled: {{item.scheduled}}
+  
+  //- Tags
+  tags(data='item.tags')
+  
+  //- Scheduler
+  scheduler(date='item.scheduled')
