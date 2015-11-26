@@ -1,1 +1,1 @@
-var app = angular.module('FalconSocial', ['ngResource']);
+var app = angular.module('FalconSocial', ['ngResource', 'btford.socket-io']);
