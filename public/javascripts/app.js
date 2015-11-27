@@ -13,6 +13,6 @@ var app = angular.module(
 app.config(['$routeProvider', '$httpProvider',
   function($routeProvider, $httpProvider) {
     $routeProvider
-      .when('/publish', { templateUrl: 'views/publish' })
+      .when('/publish/:id?', { templateUrl: 'views/publish' })
       .when('/calendar', { templateUrl: 'views/calendar' });
 }]);

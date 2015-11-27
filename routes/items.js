@@ -20,9 +20,10 @@ module.exports = {
   handleRequests: function() {
     router.get('/', function(req, res) {
       var items = db.getCollection('items');
-      var all = items.find({});
-      var ids = all.map(function(item) { return item.id ;});
-      res.json(ids);
+      var between = items.where(function(item) {
+        return req.query.start <= item.scheduled && item.scheduled <= req.query.end;
+      });
+      res.json(between);
     });
 
     router.put('/', function(req, res) {
