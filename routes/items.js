@@ -47,7 +47,7 @@ module.exports = {
     router.post('/', function(req, res) {
       var items = db.getCollection('items');
       var lokiObject = items.insert(req.body);
-      lokiObject.id = lokiObject['$loki'];
+      lokiObject.id = lokiObject['$loki'].toString();
       items.update(lokiObject);
       res.json(lokiObject.id);
       if(io) { io.emit('items:post', lokiObject.id); }
