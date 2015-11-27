@@ -72,11 +72,20 @@ module.exports = {
       var item = items.by('id', req.params.id);
 
       if(item) {
-        items.remove(item);
-        updated = true
+        // HACK: This should not be explicit
+        item.content = req.body.content;
+        item.tags = req.body.tags;
+        item.status = req.body.status;
+        item.channels = req.body.channels;
+        item.scheduled = req.body.scheduled;
+        item.geo = req.body.geo;
+
+        items.update(item);
+        updated = true;
+      } else {
+        items.insert(req.body);
       }
 
-      items.insert(req.body);
       res.sendStatus(200);
 
       if(io) {
