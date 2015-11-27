@@ -33,8 +33,9 @@
       input(type='date' ng-model='item.scheduled')
       input(type='time' ng-model='item.scheduled')
       
-      //- Publish
-      button.btn.btn-primary(ng-click='publish()') Publish
+      button.btn.btn-primary(ng-hide='edit' ng-click='publish()') Publish
+      button.btn.btn-primary(ng-show='edit' ng-click='update()') Update
+      button.btn.btn-primary(ng-show='edit' ng-click='delete()') Delete
     .col-md-4.col-md-offset-1.m-t
       h2 Preview
       .card.m-t

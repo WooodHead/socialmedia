@@ -1,4 +1,4 @@
-app.controller('PublishCtrl', ['$scope', 'ItemsFactory', function($scope, ItemsFactory) {
+app.controller('PublishCtrl', ['$scope', '$routeParams', 'ItemsFactory', 'ItemFactory', function($scope, $routeParams, ItemsFactory, ItemFactory) {
   $scope.networks = ['Facebook', 'Twitter', 'Instagram', 'Google+'];
   $scope.channels = [
     { name: 'Lovely cats', id: 1 },
@@ -50,6 +50,13 @@ app.controller('PublishCtrl', ['$scope', 'ItemsFactory', function($scope, ItemsF
     channels: []
   };
 
+  if($routeParams.id) {
+    $scope.edit = true;
+    $scope.item = ItemFactory.get({ id: $routeParams.id }, null, function(err) {
+      console.error(err);
+    });
+  }
+
   $scope.uploaded = function(res) {
     $scope.item.content.media = {
       fileName: res.data,
@@ -65,6 +72,24 @@ app.controller('PublishCtrl', ['$scope', 'ItemsFactory', function($scope, ItemsF
       console.log(res);
     }, function(err) {
       console.error(err);
-    })
+    });
+  };
+
+  $scope.update = function() {
+    $scope.item.tags = $scope.item.tags.map(x => x.text);
+
+    ItemFactory.update({ id: $scope.item.id }, $scope.item, function (res) {
+      console.log(res);
+    }, function(err) {
+      console.error(err);
+    });
+  };
+
+  $scope.delete = function() {
+    ItemFactory.delete({ id: $scope.item.id }, {}, function(res) {
+      console.log(res);
+    }, function(res) {
+      console.error(res);
+    });
   };
 }]);
