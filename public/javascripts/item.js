@@ -1,5 +1,5 @@
 app.factory('ItemFactory', ['$resource', function($resource) {
-  return $resource('/api/items/:id', [], {
+  return $resource('/api/v1/items/:id', [], {
     update: { method: 'PUT' }
   });
 }]);

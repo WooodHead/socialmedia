@@ -1,5 +1,5 @@
 app.factory('ItemsFactory', ['$resource', function($resource) {
-  return $resource('/api/items', [], {
+  return $resource('/api/v1/items', [], {
     get: { method: 'GET', isArray: true }
   });
 }]);
