@@ -1,4 +1,4 @@
-app.controller('CalendarCtrl', ['$scope', 'ItemsFactory', 'ItemFactory', function($scope, ItemsFactory, ItemFactory) {
+app.controller('CalendarCtrl', ['$scope', '$location', 'ItemsFactory', 'ItemFactory', 'Storage', function($scope, $location, ItemsFactory, ItemFactory, Storage) {
   // $scope.events = [];
 
   $scope.eventSources = [{
@@ -8,6 +8,7 @@ app.controller('CalendarCtrl', ['$scope', 'ItemsFactory', 'ItemFactory', functio
           item.start = new Date(item.scheduled);
           item.text = item.content.message;
         });
+        Storage.items = res;
         callback(res);
       }, function(err) {
         console.error(err);
@@ -27,25 +28,4 @@ app.controller('CalendarCtrl', ['$scope', 'ItemsFactory', 'ItemFactory', functio
       }
     }
   };
-
-  // var ids = ItemsFactory.get({}, function(res) {
-    // ids.forEach(function(id) {
-      // ItemFactory.get({ id: id }, function(res) {
-      //   // console.log(res);
-      //   if(res.scheduled) {
-      //     res.start = new Date(res.scheduled);
-      //     res.text = res.content.message;
-      //     $scope.eventSources[0].events.push(res);
-      //   }
-      // }, function(err) {
-      //   console.error(err);
-      // });
-    // });
-  // }, function(err) {
-  //   console.error(err);
-  // });
-
-  // $scope.eventSources = function(start, end, timezone, callback) {
-  //   console.log(start, end);
-  // };
 }]);

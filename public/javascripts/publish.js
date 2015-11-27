@@ -1,4 +1,4 @@
-app.controller('PublishCtrl', ['$scope', '$routeParams', 'ItemsFactory', 'ItemFactory', function($scope, $routeParams, ItemsFactory, ItemFactory) {
+app.controller('PublishCtrl', ['$scope', '$routeParams', 'Storage', 'ItemsFactory', 'ItemFactory', function($scope, $routeParams, Storage, ItemsFactory, ItemFactory) {
   $scope.networks = ['Facebook', 'Twitter', 'Instagram', 'Google+'];
   $scope.channels = [
     { name: 'Lovely cats', id: 1 },
@@ -52,9 +52,15 @@ app.controller('PublishCtrl', ['$scope', '$routeParams', 'ItemsFactory', 'ItemFa
 
   if($routeParams.id) {
     $scope.edit = true;
-    $scope.item = ItemFactory.get({ id: $routeParams.id }, null, function(err) {
-      console.error(err);
-    });
+    if(Storage.items) {
+      $scope.item = Storage.items.filter(function(item) {
+        return item.id === $routeParams.id;
+      })[0];
+    } else {
+      $scope.item = ItemFactory.get({ id: $routeParams.id }, null, function(err) {
+        console.error(err);
+      });
+    }
   }
 
   $scope.uploaded = function(res) {

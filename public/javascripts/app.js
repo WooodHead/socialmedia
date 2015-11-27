@@ -16,3 +16,7 @@ app.config(['$routeProvider', '$httpProvider',
       .when('/publish/:id?', { templateUrl: 'views/publish' })
       .when('/calendar', { templateUrl: 'views/calendar' });
 }]);
+
+app.factory('Storage', function() {
+  return { };
+});
