@@ -17,7 +17,7 @@ var app = express();
 mongoose.connect('mongodb://localhost/database');
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'app'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
@@ -34,6 +34,7 @@ app.use(require('node-sass-middleware')({
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'bower_components')));
+app.use(express.static(path.join(__dirname, 'app')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);

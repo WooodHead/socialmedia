@@ -1,0 +1,28 @@
+doctype
+html(lang='en' ng-app='FalconSocial')
+  head
+      meta(charset='utf-8')
+      meta(name='viewport' content='width=device-width initial-scale=1')
+      meta(http-equiv='x-ua-compatible' content='ie=edge')
+
+      //- Should use CDN in production
+      link(rel='stylesheet' href='tether/dist/css/tether.min.css')
+      link(rel='stylesheet' href='bootstrap/dist/css/bootstrap.min.css')
+      link(rel='stylesheet' href='fullcalendar/dist/fullcalendar.css')
+    body
+      ng-view
+
+      //- Should use CDN in production
+      script(src='jquery/dist/jquery.min.js')
+      script(src='tether/dist/js/tether.min.js')
+      script(src='bootstrap/dist/js/bootstrap.min.js')
+      script(src='angular/angular.min.js')
+      script(src='angular-route/angular-route.min.js')
+      script(src='angular-resource/angular-resource.min.js')
+      script(src='moment/min/moment.min.js')
+      script(src='angular-ui-calendar/src/calendar.js')
+      script(src='fullcalendar/dist/fullcalendar.min.js')
+      
+      script(src='app.js')
+      script(src='calendar/calendar.js')
+      script(src='publish/publish.js')

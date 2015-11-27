@@ -1,0 +1,7 @@
+div(ng-controller='PublishCtrl')
+  textarea(ng-model='item.content.message')
+  input(type='date' ng-model='item.scheduled')
+  input(type='time' ng-model='item.scheduled')
+  
+  button.btn.btn-primary(ng-hide='edit' ng-click='publish()') Publish
+  button.btn.btn-primary(ng-show='edit' ng-click='update()') Update
