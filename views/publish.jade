@@ -1,0 +1,53 @@
+.container-fluid(ng-controller='PublishCtrl')
+  .row
+    .col-md-4.col-md-offset-1.m-t
+      h2(style='display: inline') Message
+      //- item.status
+      span.pull-right {{item.status}}
+      //- item.content.message
+      textarea.form-control.m-t(ng-model='item.content.message' rows='4')
+      //- item.tags
+      tags-input(ng-model='item.tags')
+      //- item.content.network
+      .dropdown
+        button.btn.btn-secondary(type='button' data-toggle='dropdown') {{item.content.network}}
+        .dropdown-menu
+          .dropdown-item(ng-repeat='network in networks' ng-click='item.content.network = network') {{network}}
+      //- item.content.media
+      div.btn.btn-primary.btn-upload(upload-button url='/upload'
+        param='item' on-success='uploaded(response)') Upload image
+      img(ng-src='{{item.content.media.url}}' height=100)
+      //- item.channels
+      div(ng-dropdown-multiselect options='channels' selected-model='item.channels'
+        extra-settings='channelSelectSettings' translation-texts='{buttonDefaultText: "Channels"}')
+      //- item.geo.countries
+      div(ng-dropdown-multiselect options='countries' selected-model='item.geo.countries'
+        extra-settings='geoSelectSettings' translation-texts='{buttonDefaultText: "Countries"}')
+      div(ng-dropdown-multiselect options='languages' selected-model='item.geo.languages'
+        extra-settings='geoSelectSettings' translation-texts='{buttonDefaultText: "Languages"}')
+      div(ng-dropdown-multiselect options='cities' selected-model='item.geo.cities'
+        extra-settings='geoSelectSettings' translation-texts='{buttonDefaultText: "Cities"}')
+      div(ng-dropdown-multiselect options='regions' selected-model='item.geo.regions'
+        extra-settings='geoSelectSettings' translation-texts='{buttonDefaultText: "Regions"}')
+      //- item.scheduled
+      input(type='date' ng-model='item.scheduled')
+      input(type='time' ng-model='item.scheduled')
+      
+      //- Publish
+      button.btn.btn-primary(ng-click='publish()') Publish
+    .col-md-4.col-md-offset-1.m-t
+      h2 Preview
+      .card.m-t
+        .card-block
+          .card-title(ng-bind='item.content.channels')
+          .card-text(ng-bind='item.content.message')
+        img.card-img-bottom(ng-src='{{item.content.media.url}}' style='width: 100%')
+        .card-block
+          a Like  
+          a Comment  
+          a Share  
+      div {{item.geo}}
+      div {{item.channels}}
+      div {{item.tags}}
+      div {{item.scheduled}}
+    
