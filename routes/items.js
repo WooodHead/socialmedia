@@ -4,7 +4,12 @@ var loki = require('lokijs');
 var db = new loki('db.json');
 
 db.loadDatabase({}, function() {
-  db.getCollection('items').ensureUniqueIndex('id');
+  var items = db.getCollection('items');
+
+  if(!items) {
+    items = db.addCollection('items');
+    items.ensureUniqueIndex('id');
+  }
 });
 
 var io = null;
@@ -35,6 +40,7 @@ module.exports = {
 
       res.json(ids);
       if(io) { io.emit('items:put', ids); }
+      db.saveDatabase();
     });
 
     router.post('/', function(req, res) {
@@ -44,6 +50,7 @@ module.exports = {
       items.update(lokiObject);
       res.json(lokiObject.id);
       if(io) { io.emit('items:post', lokiObject.id); }
+      db.saveDatabase();
     });
 
     router.delete('/', function(req, res) {
@@ -51,6 +58,7 @@ module.exports = {
       items.removeWhere(function(item) { return true; });
       res.sendStatus(200);
       if(io) { io.emit('items:delete:all', { }); }
+      db.saveDatabase();
     });
 
     router.get('/:id', function(req, res) {
@@ -93,6 +101,7 @@ module.exports = {
           io.emit('items:' + item.id + ':put', req.body) :
           io.emit('items:post', item.id);
       }
+      db.saveDatabase();
     });
 
     router.delete('/:id', function(req, res) {
@@ -105,6 +114,7 @@ module.exports = {
         items.remove(item);
         res.sendStatus(200);
         if(io) { io.emit('items:delete', item.id); }
+        db.saveDatabase();
       }
     });
 

@@ -59,6 +59,8 @@ app.controller('PublishCtrl', ['$scope', 'ItemsFactory', function($scope, ItemsF
   };
 
   $scope.publish = function() {
+    $scope.item.tags = $scope.item.tags.map(x => x.text);
+
     ItemsFactory.save($scope.item, function (res) {
       console.log(res);
     }, function(err) {
