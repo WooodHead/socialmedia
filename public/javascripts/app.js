@@ -5,12 +5,14 @@ var app = angular.module(
     'btford.socket-io',
     'ngTagsInput',
     'angularjs-dropdown-multiselect',
-     'lr.upload'
+    'lr.upload',
+    'ui.calendar'
   ]
 );
 
 app.config(['$routeProvider', '$httpProvider',
   function($routeProvider, $httpProvider) {
     $routeProvider
-      .when('/publish', { templateUrl: 'views/publish' });
+      .when('/publish', { templateUrl: 'views/publish' })
+      .when('/calendar', { templateUrl: 'views/calendar' });
 }]);

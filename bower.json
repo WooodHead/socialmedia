@@ -24,6 +24,7 @@
     "angular-route": "~1.4.8",
     "bootstrap": "v4-dev",
     "tether": "~1.1.1",
-    "angular-upload": "~1.0.12"
+    "angular-upload": "~1.0.12",
+    "angular-ui-calendar": "~1.0.1"
   }
 }
