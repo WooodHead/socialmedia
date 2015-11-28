@@ -8,6 +8,21 @@ app.controller('PublishCtrl', function($scope, $routeParams, Channels, Countries
     $scope.cities = Cities.get({});
     $scope.languages = Languages.get({});
 
+    $scope.localLang = {
+      selectAll: 'Select all',
+      selectNone: 'Select none',
+      reset: 'Reset',
+      search: 'Search...',
+      nothingSelected: 'Nothing is selected'
+    };
+
+    $scope.channelsText = JSON.parse(JSON.stringify($scope.localLang)); $scope.channelsText.nothingSelected = 'Channels';
+    $scope.countriesText = JSON.parse(JSON.stringify($scope.localLang)); $scope.countriesText.nothingSelected = 'Countries';
+    $scope.regionsText = JSON.parse(JSON.stringify($scope.localLang)); $scope.regionsText.nothingSelected = 'Regions';
+    $scope.citiesText = JSON.parse(JSON.stringify($scope.localLang)); $scope.citiesText.nothingSelected = 'Cities';
+    $scope.languagesText = JSON.parse(JSON.stringify($scope.localLang)); $scope.languagesText.nothingSelected = 'Languages';
+
+
     if($routeParams.id) {
       $scope.edit = true;
       $scope.item = Item.get({ id: $routeParams.id }, function(res) {
