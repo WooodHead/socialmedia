@@ -15,12 +15,8 @@ html(lang='en' ng-app='FalconSocial')
       
       link(rel='stylesheet' href='stylesheets/style.css')
     body
-      .container-fluid
-        .row.m-t
-          .col-md-2
-            ng-include(src="'views/sidebar'")
-          .col-md-10
-            ng-view
+      ng-include(src="'views/header'")
+      ng-view
 
       //- Should use CDN in production
       script(src='jquery/dist/jquery.min.js')
