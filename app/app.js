@@ -6,7 +6,6 @@ var app = angular.module(
     'ui.calendar',
     'ngFileUpload',
     'ngTagsInput',
-    'checklist-model',
     'xeditable',
     'isteven-multi-select'
   ]
