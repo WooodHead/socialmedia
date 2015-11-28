@@ -16,21 +16,9 @@ module.exports = mongoose.model('Item', new mongoose.Schema({
   channels: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Channel' } ],
   scheduled: { type: Date, default: new Date() },
   geo: {
-    countries: [{
-      value: String,
-      key: String
-    }],
-    languages: [{
-      value: String,
-      key: String,
-    }],
-    cities: [{
-      value: String,
-      key: String
-    }],
-    regions: [{
-      value: String,
-      key: String
-    }]
+    countries: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Country' } ],
+    languages: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Language' } ],
+    cities: [ { type: mongoose.Schema.Types.ObjectId, ref: 'City' } ],
+    regions: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Region' } ]
   }
 }));

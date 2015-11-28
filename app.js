@@ -11,6 +11,7 @@ var index = require('./routes/index')();
 var views = require('./routes/views')();
 var upload = require('./routes/upload')();
 var channels = require('./routes/channels')();
+var geo = require('./routes/geo')();
 var items = require('./routes/items').handleRequests();
 
 var app = express();
@@ -42,6 +43,7 @@ app.use('/', index);
 app.use('/views/', views);
 app.use('/upload/', upload);
 app.use('/', channels);
+app.use('/', geo);
 app.use('/', items);
 
 // catch 404 and forward to error handler

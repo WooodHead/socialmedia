@@ -1,25 +1,12 @@
-app.controller('PublishCtrl', ['$scope', '$routeParams', 'Channels', 'Items', 'Item', 'Upload',
-  function($scope, $routeParams, Channels, Items, Item, Upload) {
-    $scope.item = { content: { media: { } }, channels: [] };
+app.controller('PublishCtrl', function($scope, $routeParams, Channels, Countries, Regions, Cities, Languages, Items, Item, Upload) {
+    $scope.item = { content: { media: { } }, channels: [], geo: { } };
     $scope.today = new Date();
     $scope.networks = ['Facebook', 'Twitter', 'Google+'];
     $scope.channels = Channels.get({}, function(res) { $scope.setTickedChannels(); });
-    $scope.regions = [
-      { name: 'Europe', key: 1 },
-      { name: 'Asia', key: 2 }
-    ];
-    $scope.countries = [
-      { name: 'Denmark', key: 1 },
-      { name: 'Germany', key: 2 }
-    ];
-    $scope.cities = [
-      { name: 'Copenhagen', key: 1 },
-      { name: 'Vienna', key: 2 }
-    ];
-    $scope.languages = [
-      { name: 'Danish', key: 1 },
-      { name: 'English', key: 2 }
-    ];
+    $scope.countries = Countries.get({});
+    $scope.regions = Regions.get({});
+    $scope.cities = Cities.get({});
+    $scope.languages = Languages.get({});
 
     if($routeParams.id) {
       $scope.edit = true;
@@ -84,4 +71,4 @@ app.controller('PublishCtrl', ['$scope', '$routeParams', 'Channels', 'Items', 'I
       });
     };
   }
-]);
+);

@@ -1,7 +1,0 @@
-div(ng-controller='ChannelsCtrl')
-  div(ng-repeat='channel in channels')
-    span(editable-text='channel.name' onbeforesave='update(channel, $data)') {{channel.name}}
-    button(type='button' ng-click='delete(channel)') Delete
-  
-  input(type='text' ng-model='channel.name')
-  button.btn.btn-primary(type='button' ng-click='create()') Create

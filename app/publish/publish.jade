@@ -36,28 +36,28 @@
                 a.collapsed(data-toggle='collapse', data-parent='#extra', href='#collapseRegions', target='_self', aria-expanded='false', aria-controls='collapseRegions') Regions
             #collapseRegions.panel-collapse.collapse(role='tabpanel', aria-labelledby='headingRegions')
               div(ng-repeat='region in regions') {{region.name}}
-                input(type='checkbox' checklist-model='item.regions' data-checklist-value='region')
+                input(type='checkbox' checklist-model='item.regions' data-checklist-value='region._id')
           .panel.panel-default
             #headingCountries.panel-heading(role='tab')
               h4.panel-title
                 a.collapsed(data-toggle='collapse', data-parent='#extra', href='#collapseCountries', target='_self', aria-expanded='false', aria-controls='collapseCountries') Countries
             #collapseCountries.panel-collapse.collapse(role='tabpanel', aria-labelledby='headingCountries')
               div(ng-repeat='country in countries') {{country.name}}
-                input(type='checkbox' checklist-model='item.geo.countries' data-checklist-value='country')
+                input(type='checkbox' checklist-model='item.geo.countries' data-checklist-value='country._id')
           .panel.panel-default
             #headingCities.panel-heading(role='tab')
               h4.panel-title
                 a.collapsed(data-toggle='collapse', data-parent='#extra', href='#collapseCities', target='_self', aria-expanded='false', aria-controls='collapseCities') Cities
             #collapseCities.panel-collapse.collapse(role='tabpanel', aria-labelledby='headingCities')
               div(ng-repeat='city in cities') {{city.name}}
-                input(type='checkbox' checklist-model='item.geo.cities' data-checklist-value='city')
+                input(type='checkbox' checklist-model='item.geo.cities' data-checklist-value='city._id')
           .panel.panel-default
             #headingLanguages.panel-heading(role='tab')
               h4.panel-title
                 a.collapsed(data-toggle='collapse', data-parent='#extra', href='#collapseLanguages', target='_self', aria-expanded='false', aria-controls='collapseLanguages') Languages
             #collapseLanguages.panel-collapse.collapse(role='tabpanel', aria-labelledby='headingLanguages')
               div(ng-repeat='language in languages') {{language.name}}
-                input(type='checkbox' checklist-model='item.languages' data-checklist-value='language')
+                input(type='checkbox' checklist-model='item.geo.languages' data-checklist-value='language._id')
 
         button.btn.btn-block.btn-primary(ng-show='edit && isScheduled' ng-click='update()') Update
         button.btn.btn-block.btn-primary(ng-show='edit && !isScheduled' ng-click='update()') Update
@@ -65,5 +65,8 @@
         button.btn.btn-block.btn-primary(ng-show='!edit && !isScheduled' ng-click='publish()') Publish
     
     .col-md-6
-      div {{channels}}
       div {{item.channels}}
+      div {{item.geo.countries}}
+      div {{item.geo.regions}}
+      div {{item.geo.cities}}
+      div {{item.geo.languages}}

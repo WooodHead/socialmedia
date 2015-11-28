@@ -12,35 +12,47 @@ var app = angular.module(
   ]
 );
 
+createRestifyResource(app, 'v1', 'Item', 'Items');
+createRestifyResource(app, 'v1', 'Channel', 'Channels');
+createRestifyResource(app, 'v1', 'Country', 'Countries');
+createRestifyResource(app, 'v1', 'Region', 'Regions');
+createRestifyResource(app, 'v1', 'City', 'Cities');
+createRestifyResource(app, 'v1', 'Language', 'Languages');
+
 app.config(['$routeProvider', '$httpProvider',
   function($routeProvider, $httpProvider) {
     $routeProvider
       .when('/publish/', { templateUrl: 'views/publish' })
       .when('/edit/:id', { templateUrl: 'views/publish' })
       .when('/calendar', { templateUrl: 'views/calendar' })
-      .when('/channels', { templateUrl: 'views/channels' });
+      .when('/channels', createCrudRest('Channels', 'Channel'))
+      .when('/countries', createCrudRest('Countries', 'Country'))
+      .when('/regions', createCrudRest('Regions', 'Region'))
+      .when('/cities', createCrudRest('Cities', 'City'))
+      .when('/languages', createCrudRest('Languages', 'Language'));
 }]);
 
-app.factory('Items', ['$resource', function($resource) {
-  return $resource('/api/v1/items?populate=channels', [], {
-    get: { method: 'GET', isArray: true }
-  });
-}]);
+function createRestifyResource(app, version, singular, plural) {
+  app.factory(plural, ['$resource', function($resource) {
+    return $resource('/api/' + version + '/' + plural.toLowerCase(), [], {
+      get: { method: 'GET', isArray: true }
+    });
+  }]);
 
-app.factory('Item', ['$resource', function($resource) {
-  return $resource('/api/v1/items/:id', [], {
-    update: { method: 'PATCH' }
-  });
-}]);
+  app.factory(singular, ['$resource', function($resource) {
+    return $resource('/api/' + version + '/' + plural.toLowerCase() + '/:id', [], {
+      update: { method: 'PATCH' }
+    });
+  }]);
+}
 
-app.factory('Channels', ['$resource', function($resource) {
-  return $resource('/api/v1/channels', [], {
-    get: { method: 'GET', isArray: true }
-  });
-}]);
-
-app.factory('Channel', ['$resource', function($resource) {
-  return $resource('/api/v1/channels/:id?populate=channels', [], {
-    update: { method: 'PATCH' }
-  });
-}]);
+function createCrudRest(items, item) {
+  return {
+    templateUrl: 'views/crud-rest',
+    controller: 'CrudRestCtrl',
+    resolve: {
+      Items: items,
+      Item: item
+    }
+  };
+}
