@@ -1,6 +1,6 @@
 .container-fluid(ng-controller='PublishCtrl')
-  .row.m-t
-    .col-md-5.col-md-offset-1
+  .row
+    .col-md-6
       form
         fieldset.form-group
           #channels.btn-group(data-toggle='buttons')
@@ -66,5 +66,5 @@
         button.btn.btn-block.btn-primary(ng-show='!edit && isScheduled' ng-click='publish()') Schedule
         button.btn.btn-block.btn-primary(ng-show='!edit && !isScheduled' ng-click='publish()') Publish
     
-    .col-md-5
+    .col-md-6
       div {{item.content.message}}
