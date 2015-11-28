@@ -3,10 +3,8 @@
     .col-md-6
       form
         fieldset.form-group
-          #channels.btn-group(data-toggle='buttons')
-            label.btn.btn-primary(ng-repeat='channel in channels')
-              input(type='checkbox' checklist-model='item.channels' data-checklist-value='channel')
-              | {{channel.name}}
+          div(isteven-multi-select input-model='channels' output-model='item.channels' output-properties='_id'
+            button-label='name' item-label='name' tick-property='ticked')
 
         fieldset.form-group
           select#network.form-control(ng-model='item.content.network')
@@ -67,4 +65,5 @@
         button.btn.btn-block.btn-primary(ng-show='!edit && !isScheduled' ng-click='publish()') Publish
     
     .col-md-6
-      div {{item.content.message}}
+      div {{channels}}
+      div {{item.channels}}

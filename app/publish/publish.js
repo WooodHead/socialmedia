@@ -1,13 +1,9 @@
-app.controller('PublishCtrl', ['$scope', '$routeParams', 'Items', 'Item', 'Upload',
-  function($scope, $routeParams, Items, Item, Upload) {
+app.controller('PublishCtrl', ['$scope', '$routeParams', 'Channels', 'Items', 'Item', 'Upload',
+  function($scope, $routeParams, Channels, Items, Item, Upload) {
     $scope.item = { content: { media: { } }, channels: [] };
     $scope.today = new Date();
     $scope.networks = ['Facebook', 'Twitter', 'Google+'];
-    $scope.channels = [
-      { name: 'Starbucks', id: 1 },
-      { name: 'Carlsberg', id: 2 },
-      { name: 'Motorola', id: 3 }
-    ];
+    $scope.channels = Channels.get({}, function(res) { $scope.setTickedChannels(); });
     $scope.regions = [
       { name: 'Europe', key: 1 },
       { name: 'Asia', key: 2 }
@@ -30,6 +26,7 @@ app.controller('PublishCtrl', ['$scope', '$routeParams', 'Items', 'Item', 'Uploa
       $scope.item = Item.get({ id: $routeParams.id }, function(res) {
         $scope.item.scheduled = new Date($scope.item.scheduled);
         $scope.isScheduled = (new Date() < $scope.item.scheduled);
+        $scope.setTickedChannels();
         // FIXME: Channels are not preselected
       }, function(err) {
         console.error(err);
@@ -75,6 +72,16 @@ app.controller('PublishCtrl', ['$scope', '$routeParams', 'Items', 'Item', 'Uploa
     $scope.prepareData = function() {
       if($scope.item.tags)
         $scope.item.tags = $scope.item.tags.map(tag => tag.text);
+
+      if($scope.item.channels)
+        $scope.item.channels = $scope.item.channels.map(channel => channel._id);
+    };
+
+    $scope.setTickedChannels = function() {
+      console.log($scope.channels, $scope.item.channels);
+      $scope.channels.forEach(function(channel) {
+        channel.ticked = $scope.item.channels.filter(x => x === channel._id).length === 1;
+      });
     };
   }
 ]);

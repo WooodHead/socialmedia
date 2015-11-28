@@ -13,10 +13,7 @@ module.exports = mongoose.model('Item', new mongoose.Schema({
   },
   tags: [ String ],
   status: String,
-  channels: [{
-    name: String,
-    id: Number
-  }],
+  channels: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Channel' } ],
   scheduled: { type: Date, default: new Date() },
   geo: {
     countries: [{
