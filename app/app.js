@@ -3,10 +3,11 @@ var app = angular.module(
     'ngResource',
     'ngRoute',
     // 'btford.socket-io',
-    // 'ngTagsInput',
     // 'angularjs-dropdown-multiselect',
-    // 'lr.upload',
-    'ui.calendar'
+    'ui.calendar',
+    'ngFileUpload',
+    'ngTagsInput',
+    'checklist-model'
   ]
 );
 
@@ -26,6 +27,6 @@ app.factory('Items', ['$resource', function($resource) {
 
 app.factory('Item', ['$resource', function($resource) {
   return $resource('/api/v1/items/:id', [], {
-    update: { method: 'PUT' }
+    update: { method: 'PATCH' }
   });
 }]);

@@ -1,7 +1,70 @@
-div(ng-controller='PublishCtrl')
-  textarea(ng-model='item.content.message')
-  input(type='date' ng-model='item.scheduled')
-  input(type='time' ng-model='item.scheduled')
-  
-  button.btn.btn-primary(ng-hide='edit' ng-click='publish()') Publish
-  button.btn.btn-primary(ng-show='edit' ng-click='update()') Update
+.container-fluid(ng-controller='PublishCtrl')
+  .row.m-t
+    .col-md-5.col-md-offset-1
+      form
+        fieldset.form-group
+          #channels.btn-group(data-toggle='buttons')
+            label.btn.btn-primary(ng-repeat='channel in channels')
+              input(type='checkbox' checklist-model='item.channels' data-checklist-value='channel')
+              | {{channel.name}}
+
+        fieldset.form-group
+          select#network.form-control(ng-model='item.content.network')
+            option(ng-repeat='network in networks' value='{{network}}') {{network}}
+
+        fieldset.form-group
+          textarea#message.form-control(ng-model='item.content.message' rows=4)
+
+        fieldset.form-group
+          tags-input#tags(ng-model='item.tags')
+
+        .form-group
+          img(ng-show='item.content.media.url' ng-src='{{item.content.media.url}}' height=150)
+          button.btn.btn-block.btn-primary(ngf-select='upload($file)' ng-hide='item.content.media.url') Add image
+          button.btn.btn-block.btn-primary(ng-show='item.content.media.url' ng-click='remove()') Remove image
+        
+        #extra(role='tablist', aria-multiselectable='true')
+          .panel.panel-default
+            #headingScheduled.panel-heading(role='tab')
+              h4.panel-title
+                a(data-toggle='collapse', data-parent='#extra', href='#collapseScheduled', target='_self', aria-expanded='false', aria-controls='collapseScheduled') Scheduled
+            #collapseScheduled.panel-collapse.collapse(role='tabpanel', aria-labelledby='headingScheduled')
+              input(type='checkbox' ng-model='isScheduled')
+              input(type='date' ng-model='item.scheduled' ng-show='isScheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
+              input(type='time' ng-model='item.scheduled' ng-show='isScheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
+          .panel.panel-default
+            #headingRegions.panel-heading(role='tab')
+              h4.panel-title
+                a.collapsed(data-toggle='collapse', data-parent='#extra', href='#collapseRegions', target='_self', aria-expanded='false', aria-controls='collapseRegions') Regions
+            #collapseRegions.panel-collapse.collapse(role='tabpanel', aria-labelledby='headingRegions')
+              div(ng-repeat='region in regions') {{region.name}}
+                input(type='checkbox' checklist-model='item.regions' data-checklist-value='region')
+          .panel.panel-default
+            #headingCountries.panel-heading(role='tab')
+              h4.panel-title
+                a.collapsed(data-toggle='collapse', data-parent='#extra', href='#collapseCountries', target='_self', aria-expanded='false', aria-controls='collapseCountries') Countries
+            #collapseCountries.panel-collapse.collapse(role='tabpanel', aria-labelledby='headingCountries')
+              div(ng-repeat='country in countries') {{country.name}}
+                input(type='checkbox' checklist-model='item.geo.countries' data-checklist-value='country')
+          .panel.panel-default
+            #headingCities.panel-heading(role='tab')
+              h4.panel-title
+                a.collapsed(data-toggle='collapse', data-parent='#extra', href='#collapseCities', target='_self', aria-expanded='false', aria-controls='collapseCities') Cities
+            #collapseCities.panel-collapse.collapse(role='tabpanel', aria-labelledby='headingCities')
+              div(ng-repeat='city in cities') {{city.name}}
+                input(type='checkbox' checklist-model='item.geo.cities' data-checklist-value='city')
+          .panel.panel-default
+            #headingLanguages.panel-heading(role='tab')
+              h4.panel-title
+                a.collapsed(data-toggle='collapse', data-parent='#extra', href='#collapseLanguages', target='_self', aria-expanded='false', aria-controls='collapseLanguages') Languages
+            #collapseLanguages.panel-collapse.collapse(role='tabpanel', aria-labelledby='headingLanguages')
+              div(ng-repeat='language in languages') {{language.name}}
+                input(type='checkbox' checklist-model='item.languages' data-checklist-value='language')
+
+        button.btn.btn-block.btn-primary(ng-show='edit && isScheduled' ng-click='update()') Update
+        button.btn.btn-block.btn-primary(ng-show='edit && !isScheduled' ng-click='update()') Update
+        button.btn.btn-block.btn-primary(ng-show='!edit && isScheduled' ng-click='publish()') Schedule
+        button.btn.btn-block.btn-primary(ng-show='!edit && !isScheduled' ng-click='publish()') Publish
+    
+    .col-md-5
+      div {{item.content.message}}

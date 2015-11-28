@@ -20,8 +20,13 @@ app.controller('CalendarCtrl', ['$scope', 'Items', function($scope, Items) {
     calendar: {
       defaultView: 'basicWeek',
       eventRender: function(event, element) {
-        element[0].innerHTML =
-          '<a href="#/edit/' + event._id + '">' + event.content.message + '</a>';
+        var network = '<div>' + event.content.network + '</div>'
+        var img = event.content.media ?
+          ('<img src="' + event.content.media.url + '" style="width: 100%"/>') :
+          '';
+        var message = '<a href="#/edit/' + event._id + '" style="color: white">' + event.content.message + '</a>';
+
+        element[0].innerHTML = network + img + message;
       }
     }
   };

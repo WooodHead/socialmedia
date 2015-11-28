@@ -17,7 +17,7 @@ module.exports = mongoose.model('Item', new mongoose.Schema({
     name: String,
     id: Number
   }],
-  scheduled: Date,
+  scheduled: { type: Date, default: new Date() },
   geo: {
     countries: [{
       value: String,
