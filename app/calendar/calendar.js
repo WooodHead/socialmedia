@@ -1,5 +1,6 @@
-app.controller('CalendarCtrl', function($scope, Items, socket, uiCalendarConfig) {
+app.controller('CalendarCtrl', function($scope, $routeParams, $location, Items, socket, uiCalendarConfig) {
   $scope.uiConfig = { calendar: {
+    defaultDate: new Date($routeParams.year, $routeParams.month, $routeParams.day),
     defaultView: 'basicWeek',
     firstDay: 1,
     header: {
@@ -28,6 +29,7 @@ app.controller('CalendarCtrl', function($scope, Items, socket, uiCalendarConfig)
     },
     events: function(start, end, timezone, callback) {
       var view = uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('getView').type;
+      $location.path('/calendar/' + start.year() + '/' + start.month() + '/' + start.date(), false);
 
       console.log(view, start.month(), $scope.cachedMonth, start.isoWeek(), $scope.cachedWeek);
 

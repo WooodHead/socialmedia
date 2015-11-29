@@ -27,12 +27,26 @@ app.config(['$routeProvider', '$httpProvider',
     $routeProvider
       .when('/publish/', { templateUrl: 'views/publish' })
       .when('/edit/:id', { templateUrl: 'views/publish' })
-      .when('/calendar', { templateUrl: 'views/calendar' })
+      .when('/calendar/:year/:month/:day', { templateUrl: 'views/calendar' })
       .when('/channels', createCrudRest('Channels', 'Channel'))
       .when('/countries', createCrudRest('Countries', 'Country'))
       .when('/regions', createCrudRest('Regions', 'Region'))
       .when('/cities', createCrudRest('Cities', 'City'))
       .when('/languages', createCrudRest('Languages', 'Language'));
+}]);
+
+app.run(['$route', '$rootScope', '$location', function ($route, $rootScope, $location) {
+    var original = $location.path;
+    $location.path = function (path, reload) {
+        if (reload === false) {
+            var lastRoute = $route.current;
+            var un = $rootScope.$on('$locationChangeSuccess', function () {
+                $route.current = lastRoute;
+                un();
+            });
+        }
+        return original.apply($location, [path]);
+    };
 }]);
 
 function createRestifyResource(app, version, singular, plural) {
