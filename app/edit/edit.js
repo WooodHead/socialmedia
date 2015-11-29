@@ -27,7 +27,7 @@ app.directive('edit', function() {
 
       $scope.publish = function() {
         $scope.prepareData();
-        Items.save($scope.item, function(res) {
+        $scope.item = Items.save($scope.item, function(res) {
         }, function(err) {
           console.error(err);
         });
@@ -59,6 +59,10 @@ app.directive('edit', function() {
       $scope.remove = function() {
         // TODO: Delete the image from the server
         $scope.item.content.media = { fileName: null, fileUrl: null, url: null };
+      };
+
+      $scope.delete = function() {
+        Item.delete({ id: $scope.item._id });
       };
 
       $scope.prepareData = function() {

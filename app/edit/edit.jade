@@ -1,14 +1,15 @@
 div.card
   div.card-header Post a message
   div.card-block
-    div#channels.card-text
-      div(isteven-multi-select input-model='channels' output-model='item.channels' button-label='name' item-label='name' tick-property='ticked'
+    span(ng-bind='item._id')
+    div.card-text
+      div#channels(isteven-multi-select input-model='channels' output-model='item.channels' button-label='name' item-label='name' tick-property='ticked'
         translation='channelsText')
-    div#network.card.text.m-t
-      select.form-control(ng-model='item.content.network')
+    div.card.text.m-t
+      select#network.form-control(ng-model='item.content.network')
         option(ng-repeat='network in networks' value='{{network}}') {{network}}
-    div#message.card-text
-      textarea.form-control(ng-model='item.content.message' rows=4)
+    div.card-text
+      textarea#message.form-control(ng-model='item.content.message' rows=4)
     div#tags.card-text.m-t
       tags-input(ng-model='item.tags')
     div#media.card-text.m-t
@@ -40,7 +41,7 @@ div.card
           output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
           translation='languagesText')
     div.card-text.m-t
-      button.btn.btn-block.btn-primary(ng-show='item._id && isScheduled' ng-click='update()') Update
-      button.btn.btn-block.btn-primary(ng-show='item._id && !isScheduled' ng-click='update()') Update
-      button.btn.btn-block.btn-primary(ng-show='!item._id && isScheduled' ng-click='publish()') Schedule
-      button.btn.btn-block.btn-primary(ng-show='!item._id && !isScheduled' ng-click='publish()') Publish
+      button#update.btn.btn-block.btn-primary(ng-show='item._id && isScheduled || item._id && !isScheduled' ng-click='update()') Update
+      button#schedule.btn.btn-block.btn-primary(ng-show='!item._id && isScheduled' ng-click='publish()') Schedule
+      button#publish.btn.btn-block.btn-primary(ng-show='!item._id && !isScheduled' ng-click='publish()') Publish
+      button#delete.btn.btn-block.btn-primary(ng-show='item._id' ng-click='delete()') Delete

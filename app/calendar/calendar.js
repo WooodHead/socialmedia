@@ -7,8 +7,13 @@ app.controller('CalendarCtrl', function($scope, $routeParams, $location, Items, 
       left: 'month basicWeek',
       center: 'title',
       right: ' today prev,next'
-    }}
-  };
+    },
+    eventRender: function(event, element, view) {
+      console.log(element);
+      element[0].id = event._id;
+
+      return element;
+  }}};
 
   // We will cache the items retrieved via http
   // and then keep them up-to-date via socket.io
