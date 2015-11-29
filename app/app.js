@@ -2,7 +2,7 @@ var app = angular.module(
   'FalconSocial', [
     'ngResource',
     'ngRoute',
-    // 'btford.socket-io',
+    'btford.socket-io',
     'ui.calendar',
     'ngFileUpload',
     'ngTagsInput',
@@ -10,6 +10,10 @@ var app = angular.module(
     'isteven-multi-select'
   ]
 );
+
+app.factory('socket', function (socketFactory) {
+  return socketFactory();
+});
 
 createRestifyResource(app, 'v1', 'Item', 'Items');
 createRestifyResource(app, 'v1', 'Channel', 'Channels');
