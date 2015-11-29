@@ -37,7 +37,7 @@ app.config(['$routeProvider', '$httpProvider',
 
 function createRestifyResource(app, version, singular, plural) {
   app.factory(plural, ['$resource', function($resource) {
-    return $resource('/api/' + version + '/' + plural.toLowerCase(), [], {
+    return $resource('/api/' + version + '/' + plural.toLowerCase() + '?populate=channels', [], {
       get: { method: 'GET', isArray: true }
     });
   }]);

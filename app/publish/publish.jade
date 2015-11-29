@@ -1,48 +1,5 @@
-div.card(ng-controller='PublishCtrl' style='width: 400px')
-  div.card-header Post a message
-  div.card-block
-    div#channels.card-text
-      div(isteven-multi-select input-model='channels' output-model='item.channels'
-        output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
-        translation='channelsText')
-    div#network.card.text.m-t
-      select.form-control(ng-model='item.content.network')
-        option(ng-repeat='network in networks' value='{{network}}') {{network}}
-    div#message.card-text
-      textarea.form-control(ng-model='item.content.message' rows=4)
-    div#tags.card-text.m-t
-      tags-input(ng-model='item.tags')
-    div#media.card-text.m-t
-      button.btn.btn-block.btn-secondary(ngf-select='upload($file)' ng-hide='item.content.media.url') Add image
-      div(ng-show='item.content.media.url')
-        img.card-img-top.m-b(ng-src='{{item.content.media.url}}' style='height: 100px')
-        button.btn.btn-block.btn-primary(ng-click='remove()') Remove image
-    div#scheduled.card-text.m-t
-      label.btn.btn-secondary.btn-block
-        input(type='checkbox' ng-model='isScheduled')
-        |  Schedule
-      input(type='date' ng-show='isScheduled' ng-model='item.scheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
-      input(type='time' ng-show='isScheduled' ng-model='item.scheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
-    div#geo.card-text.m-t
-      label.btn.btn-secondary.btn-block
-        input(type='checkbox' ng-model='isGeo')
-        |  Geo-Targeting
-      div(ng-show='isGeo')
-        div#countries.m-t(isteven-multi-select input-model='countries' output-model='item.geo.countries'
-          output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
-          translation='countriesText')
-        div#regions.m-t(isteven-multi-select input-model='regions' output-model='item.geo.regions'
-          output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
-          translation='regionsText')
-        div#cities.m-t(isteven-multi-select input-model='cities' output-model='item.geo.cities'
-          output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
-          translation='citiesText')
-        div#languages.m-t(isteven-multi-select input-model='languages' output-model='item.geo.languages'
-          output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
-          translation='languagesText')
-
-    div.card-text.m-t
-      button.btn.btn-block.btn-primary(ng-show='edit && isScheduled' ng-click='update()') Update
-      button.btn.btn-block.btn-primary(ng-show='edit && !isScheduled' ng-click='update()') Update
-      button.btn.btn-block.btn-primary(ng-show='!edit && isScheduled' ng-click='publish()') Schedule
-      button.btn.btn-block.btn-primary(ng-show='!edit && !isScheduled' ng-click='publish()') Publish
+div(ng-controller='PublishCtrl')
+  .col-md-5.col-md-offset-1
+    div(edit item='item' channels='channels' networks='networks' geo='geo')
+  .col-md-5
+    div(view item='item')

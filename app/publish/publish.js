@@ -1,89 +1,40 @@
-app.controller('PublishCtrl', function($scope, $routeParams, Channels, Countries, Regions, Cities, Languages, Items, Item, Upload) {
-    $scope.item = { content: { media: { } }, channels: [], geo: { } };
-    $scope.today = new Date();
-    $scope.networks = ['Facebook', 'Twitter', 'Google+'];
-    $scope.channels = Channels.get({}, function(res) { $scope.setTickedChannels(); });
-    $scope.countries = Countries.get({});
-    $scope.regions = Regions.get({});
-    $scope.cities = Cities.get({});
-    $scope.languages = Languages.get({});
-
-    $scope.localLang = {
-      selectAll: 'Select all',
-      selectNone: 'Select none',
-      reset: 'Reset',
-      search: 'Search...',
-      nothingSelected: 'Nothing is selected'
+app.controller('PublishCtrl', function($scope, $routeParams, Channels,
+  Countries, Regions, Cities, Languages, Items, Item) {
+    // HACK: Manually set the tick if the selected properties
+    $scope.setTicked = function(inputModel, outputModel) {
+      console.log('setTicked', JSON.stringify(inputModel), JSON.stringify(outputModel));
+      inputModel.forEach(function(input) {
+        input.ticked = outputModel.indexOf(input._id) !== -1;
+      });
     };
 
-    $scope.channelsText = JSON.parse(JSON.stringify($scope.localLang)); $scope.channelsText.nothingSelected = 'Channels';
-    $scope.countriesText = JSON.parse(JSON.stringify($scope.localLang)); $scope.countriesText.nothingSelected = 'Countries';
-    $scope.regionsText = JSON.parse(JSON.stringify($scope.localLang)); $scope.regionsText.nothingSelected = 'Regions';
-    $scope.citiesText = JSON.parse(JSON.stringify($scope.localLang)); $scope.citiesText.nothingSelected = 'Cities';
-    $scope.languagesText = JSON.parse(JSON.stringify($scope.localLang)); $scope.languagesText.nothingSelected = 'Languages';
+    // HACK: Manually set the tick if the selected properties
+    $scope.tickAllSelected = function() {
+      $scope.setTicked($scope.channels, $scope.item.channels);
+      $scope.setTicked($scope.geo.countries, $scope.item.geo.countries);
+      $scope.setTicked($scope.geo.regions, $scope.item.geo.regions);
+      $scope.setTicked($scope.geo.cities, $scope.item.geo.cities);
+      $scope.setTicked($scope.geo.languages, $scope.item.geo.languages);
+    };
 
+    $scope.networks = ['Facebook', 'Twitter', 'Google+'];
+    $scope.channels = Channels.get({}, function() { $scope.tickAllSelected(); });
+    $scope.geo = {
+      countries: Countries.get({}, function() { $scope.tickAllSelected(); }),
+      regions: Regions.get({}, function() { $scope.tickAllSelected(); }),
+      cities: Cities.get({}, function() { $scope.tickAllSelected(); }),
+      languages: Languages.get({}, function() { $scope.tickAllSelected(); }),
+    };
 
     if($routeParams.id) {
-      $scope.edit = true;
       $scope.item = Item.get({ id: $routeParams.id }, function(res) {
         $scope.item.scheduled = new Date($scope.item.scheduled);
-        $scope.isScheduled = (new Date() < $scope.item.scheduled);
-        $scope.setTickedChannels();
-        // FIXME: Channels are not preselected
+        $scope.tickAllSelected();
       }, function(err) {
         console.error(err);
       });
+    } else {
+      $scope.item = { };
     }
-
-    $scope.publish = function() {
-      $scope.prepareData();
-      Items.save($scope.item, function(res) {
-      }, function(err) {
-        console.error(err);
-      });
-    };
-
-    $scope.update = function() {
-      $scope.prepareData();
-      Item.update({ id: $routeParams.id }, $scope.item, function(res) {
-      }, function(err) {
-        console.error(err);
-      });
-    };
-
-    $scope.upload = function(file) {
-      Upload.upload({
-        url: '/upload',
-        data: { item: file }
-      }).then(function(res) {
-        $scope.item.content.media = {
-          fileName: res.data,
-          fileUrl: 'http://localhost:3000/images/' + res.data,
-          url: 'http://localhost:3000/images/' + res.data
-        };
-      }, function(err) {
-        console.error(err);
-      });
-    };
-
-    $scope.remove = function() {
-      // TODO: Delete the image from the server
-      $scope.item.content.media = { fileName: null, fileUrl: null, url: null };
-    };
-
-    $scope.prepareData = function() {
-      if($scope.item.tags)
-        $scope.item.tags = $scope.item.tags.map(tag => tag.text);
-
-      if($scope.item.channels)
-        $scope.item.channels = $scope.item.channels.map(channel => channel._id);
-    };
-
-    $scope.setTickedChannels = function() {
-      console.log($scope.channels, $scope.item.channels);
-      $scope.channels.forEach(function(channel) {
-        channel.ticked = $scope.item.channels.filter(x => x === channel._id).length === 1;
-      });
-    };
   }
 );

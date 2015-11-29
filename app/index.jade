@@ -15,8 +15,11 @@ html(lang='en' ng-app='FalconSocial')
       
       link(rel='stylesheet' href='stylesheets/style.css')
     body
-      ng-include(src="'views/header'")
-      ng-view
+      .container-fluid
+        .row
+          ng-include(src="'views/header'")
+        .row.m-t
+          ng-view
 
       //- Should use CDN in production
       script(src='jquery/dist/jquery.min.js')
@@ -37,5 +40,7 @@ html(lang='en' ng-app='FalconSocial')
       script(src='angular-socket-io/socket.min.js')
       script(src='app.js')
       script(src='calendar/calendar.js')
-      script(src='publish/publish.js')
       script(src='crud-rest/crud-rest.js')
+      script(src='publish/publish.js')
+      script(src='edit/edit.js')
+      script(src='view/view.js')
