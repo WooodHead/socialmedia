@@ -20,9 +20,9 @@ function smiEdit() {
   };
 }
 
-SmiEditCtrl.$inject = ['$scope', 'Items', 'Item', 'Upload'];
+SmiEditCtrl.$inject = ['$scope', 'itemsService', 'itemService', 'Upload'];
 
-function SmiEditCtrl($scope, Items, Item, Upload) {
+function SmiEditCtrl($scope, itemsService, itemService, Upload) {
   var vm = this;
 
   // Form fields
@@ -46,7 +46,7 @@ function SmiEditCtrl($scope, Items, Item, Upload) {
   function publish() {
     vm.prepareData();
     console.log(vm.item);
-    vm.item = Items.save(vm.item, function(res) {
+    vm.item = itemsService.save(vm.item, function(res) {
     }, function(err) {
       console.error(err);
     });
@@ -54,7 +54,7 @@ function SmiEditCtrl($scope, Items, Item, Upload) {
 
   function update() {
     vm.prepareData();
-    Item.update({ id: vm.item._id }, vm.item, function(res) {
+    itemService.update({ id: vm.item._id }, vm.item, function(res) {
     }, function(err) {
       console.error(err);
     });
@@ -81,7 +81,7 @@ function SmiEditCtrl($scope, Items, Item, Upload) {
   };
 
   function remove() {
-    Item.delete({ id: vm.item._id });
+    itemService.delete({ id: vm.item._id });
   };
 
   function prepareData() {

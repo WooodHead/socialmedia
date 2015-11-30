@@ -3,14 +3,14 @@
     .module('SocialMedia')
     .controller('PublishCtrl', PublishCtrl);
 
-  PublishCtrl.$inject = ['Item', 'Channels', 'Geo'];
+  PublishCtrl.$inject = ['item', 'channels', 'geo'];
 
-  function PublishCtrl(Item, Channels, Geo) {
+  function PublishCtrl(item, channels, geo) {
     var vm = this;
 
-    vm.channels = Channels;
-    vm.item = typeof(Item) === 'object' ? Item : null;
-    vm.geo = Geo;
+    vm.channels = channels;
+    vm.item = typeof(item) === 'object' ? item : null;
+    vm.geo = geo;
     vm.networks = ['Facebook', 'Twitter', 'Google+'];
 
     if(vm.item) {

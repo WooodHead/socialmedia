@@ -4,7 +4,7 @@
     .controller('CalendarCtrl', CalendarCtrl);
 })();
 
-function CalendarCtrl($routeParams, $location, Items, socket, uiCalendarConfig) {
+function CalendarCtrl($routeParams, $location, itemsService, socket, uiCalendarConfig) {
   var vm = this;
 
   // FullCalendar
@@ -86,7 +86,7 @@ function CalendarCtrl($routeParams, $location, Items, socket, uiCalendarConfig) 
         }};
 
         // Fetch and cache the items
-        Items.get({ query: query }, function(res) {
+        itemsService.get({ query: query }, function(res) {
           cachedItems = res;
           previousView = view;
 

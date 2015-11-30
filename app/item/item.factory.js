@@ -1,18 +1,18 @@
 (function() {
-  createRestifyResource('v1', 'Item', 'Items');
-  createRestifyResource('v1', 'Channel', 'Channels');
-  createRestifyResource('v1', 'Country', 'Countries');
-  createRestifyResource('v1', 'Region', 'Regions');
-  createRestifyResource('v1', 'City', 'Cities');
-  createRestifyResource('v1', 'Language', 'Languages');
+  createRestifyResource('v1', 'item', 'items');
+  createRestifyResource('v1', 'channel', 'channels');
+  createRestifyResource('v1', 'country', 'countries');
+  createRestifyResource('v1', 'region', 'regions');
+  createRestifyResource('v1', 'city', 'cities');
+  createRestifyResource('v1', 'language', 'languages');
 
   function createRestifyResource(version, singular, plural) {
     angular
       .module('SocialMedia')
-      .factory(plural, ['$resource', createPluralResource]);
+      .factory(plural + 'Service', ['$resource', createPluralResource]);
     angular
       .module('SocialMedia')
-      .factory(singular, ['$resource', createSingularResource]);
+      .factory(singular + 'Service', ['$resource', createSingularResource]);
 
     function createPluralResource($resource) {
       return $resource('/api/' + version + '/' + plural.toLowerCase() + '?populate=channels', [], {
