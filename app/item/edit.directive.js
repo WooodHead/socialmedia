@@ -1,7 +1,7 @@
 app.directive('edit', function() {
   return {
     restrict: 'A',
-    templateUrl: 'views/edit',
+    templateUrl: 'views/item/edit.directive.jade',
     scope: {
       item: '=',
       channels: '=',

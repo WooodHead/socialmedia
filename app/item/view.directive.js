@@ -1,7 +1,7 @@
 app.directive('view', function() {
   return {
     restrict: 'A',
-    templateUrl: 'views/view',
+    templateUrl: 'views/item/view.directive.jade',
     scope: {
       item: '='
     }

@@ -17,7 +17,7 @@ html(lang='en' ng-app='FalconSocial')
     body
       .container-fluid
         .row
-          ng-include(src="'views/header'")
+          ng-include(src="'views/layout/header'")
         .row.m-t
           ng-view
 
@@ -38,9 +38,13 @@ html(lang='en' ng-app='FalconSocial')
       
       script(src='/socket.io/socket.io.js')
       script(src='angular-socket-io/socket.min.js')
-      script(src='app.js')
-      script(src='calendar/calendar.js')
-      script(src='crud-rest/crud-rest.js')
-      script(src='publish/publish.js')
-      script(src='edit/edit.js')
-      script(src='view/view.js')
+      script(src='app.module.js')
+      script(src='app.config.js')
+      script(src='app.run.js')
+      script(src='item/item.factory.js')
+      script(src='item/view.directive.js')
+      script(src='item/edit.directive.js')
+      script(src='item/socket.factory.js')
+      script(src='calendar/calendar.controller.js')
+      script(src='crud-rest/crud-rest.controller.js')
+      script(src='publish/publish.controller.js')
