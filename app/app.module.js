@@ -7,7 +7,8 @@
       'ngFileUpload',
       'ngTagsInput',
       'xeditable',
-      'isteven-multi-select'
+      'isteven-multi-select',
+      'ngLocationUpdate'
     ]
   );
 })();

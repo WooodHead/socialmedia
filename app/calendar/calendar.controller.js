@@ -56,7 +56,7 @@ function CalendarCtrl($routeParams, $location, itemsService, socket, uiCalendarC
       },
       events: function(start, end, timezone, callback) {
         var view = uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('getView').type;
-        $location.path(datePath(start), false);
+        $location.update_path(datePath(start), true);
 
         console.log(view, start.month(), cachedMonth, start.isoWeek(), cachedWeek);
 
