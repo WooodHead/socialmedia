@@ -29,5 +29,8 @@
     "angular-xeditable": "~0.1.9",
     "isteven-angular-multiselect": "angular-multi-select#~4.0.0",
     "ng-dialog": "~0.5.6"
+  },
+  "devDependencies": {
+    "angular-location-update": "~0.0.2"
   }
 }

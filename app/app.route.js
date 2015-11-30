@@ -5,26 +5,8 @@
 
   function routes($routeProvider, $httpProvider) {
     $routeProvider
-      .when('/publish/', {
-        templateUrl: 'views/publish',
-        controller: 'PublishCtrl',
-        controllerAs: 'publish',
-        resolve: {
-          item: function() { return null; },
-          channels: channelsFetcher,
-          geo: geoFetcher,
-        }
-      })
-      .when('/edit/:id', {
-        templateUrl: 'views/publish',
-        controller: 'PublishCtrl',
-        controllerAs: 'publish',
-        resolve: {
-          item: itemFetcher,
-          channels: channelsFetcher,
-          geo: geoFetcher,
-        }
-      })
+      .when('/publish/', publish())
+      .when('/edit/:id', publish())
       .when('/calendar/:year?/:month?/:day?', { templateUrl: 'views/calendar' })
       .when('/channels', createCrudRest('channelsService', 'channelService'))
       .when('/countries', createCrudRest('countriesService', 'countryService'))
@@ -45,14 +27,30 @@
     };
   }
 
-  function itemFetcher(itemService, $route) { return itemService.get({ id: $route.current.params.id }); }
-  function channelsFetcher(channelsService) { return channelsService.get(); }
-  function geoFetcher(countriesService, regionsService, citiesService, languagesService) {
+  function publish() {
     return {
-      countries: countriesService.get({}),
-      regions: regionsService.get({}),
-      cities: citiesService.get({}),
-      languages: languagesService.get({}),
+      templateUrl: 'views/publish',
+      controller: 'PublishCtrl',
+      controllerAs: 'publish',
+      resolve: {
+        item: function(itemService, $route) {
+          if($route.current.params.id)
+            return itemService.get({ id: $route.current.params.id }).$promise;
+          else
+            return null;
+        },
+        channels: function(channelsService) { return channelsService.get().$promise; },
+        geo: function($q, countriesService, regionsService, citiesService, languagesService) {
+          var geo = {
+            countries: countriesService.get(),
+            regions: regionsService.get(),
+            cities: citiesService.get(),
+            languages: languagesService.get(),
+          };
+
+          return $q.all(geo).then(function(values) { return values; });
+        },
+      }
     };
   }
 })();
