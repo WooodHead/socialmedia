@@ -1,3 +1,5 @@
-app.factory('socket', function (socketFactory) {
-  return socketFactory();
-});
+(function() {
+  app.factory('socket', function (socketFactory) {
+    return socketFactory();
+  });
+})();
