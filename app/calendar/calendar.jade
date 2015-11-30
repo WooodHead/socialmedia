@@ -1,2 +1,2 @@
-div(ng-controller='CalendarCtrl')
-  div(ui-calendar='uiConfig.calendar' ng-model='eventSources' calendar='itemsCalendar')
+div(ng-controller='CalendarCtrl as calendar')
+  div(ui-calendar='calendar.uiConfig.calendar' ng-model='calendar.eventSources' calendar='itemsCalendar')
