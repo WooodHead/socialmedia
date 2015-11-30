@@ -18,7 +18,8 @@
   function createCrudRest(items, item) {
     return {
       templateUrl: 'views/crud-rest',
-      controller: 'CrudRestCtrl as crudRest',
+      controller: 'CrudRestCtrl',
+      controllerAs: 'crudRest',
       resolve: {
         Items: items,
         Item: item
