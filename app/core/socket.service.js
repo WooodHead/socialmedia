@@ -1,6 +1,6 @@
 (function() {
   angular
-    .module('SocialMedia')
+    .module('SocialMedia.Core')
     .factory('socket', socket);
 
   function socket(socketFactory) {

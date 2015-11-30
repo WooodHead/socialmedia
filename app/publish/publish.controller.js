@@ -25,7 +25,7 @@
     }
 
     function setTicked(inputModel, outputModel) {
-      console.log('setTicked', JSON.stringify(inputModel), JSON.stringify(outputModel));
+      ('setTicked', JSON.stringify(inputModel), JSON.stringify(outputModel));
       inputModel.forEach(function(input) {
         input.ticked = outputModel.indexOf(input._id) !== -1;
       });

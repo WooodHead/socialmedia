@@ -8,10 +8,8 @@
 
   function createRestifyResource(version, singular, plural) {
     angular
-      .module('SocialMedia')
-      .factory(plural + 'Service', ['$resource', createPluralResource]);
-    angular
-      .module('SocialMedia')
+      .module('SocialMedia.Core')
+      .factory(plural + 'Service', ['$resource', createPluralResource])
       .factory(singular + 'Service', ['$resource', createSingularResource]);
 
     function createPluralResource($resource) {
