@@ -16,7 +16,7 @@ div.card
       button.btn.btn-block.btn-secondary(ngf-select='upload($file)' ng-hide='item.content.media.url') Add image
       div(ng-show='item.content.media.url')
         img.card-img-top.m-b(ng-src='{{item.content.media.url}}' style='height: 100px')
-        button.btn.btn-block.btn-primary(ng-click='remove()') Remove image
+        button.btn.btn-block.btn-primary(ng-click='clearImage()') Remove image
     div#scheduled.card-text.m-t
       label.btn.btn-secondary.btn-block
         input(type='checkbox' ng-model='isScheduled')

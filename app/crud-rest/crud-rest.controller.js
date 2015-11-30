@@ -7,9 +7,12 @@
 function CrudRestCtrl(Items, Item) {
   var vm = this;
 
+  vm.create = create;
+  vm.delete = remove;
   vm.items = Items.get({});
+  vm.update = update;
 
-  vm.create = function() {
+  function create() {
     console.log(vm.item);
     Items.save({}, vm.item, function(res) {
       console.log(res);
@@ -18,11 +21,11 @@ function CrudRestCtrl(Items, Item) {
     });
   };
 
-  vm.update = function(item, data) {
+  function update(item, data) {
     Item.update({ id: item._id }, { name: data });
   };
 
-  vm.delete = function(item) {
+  function remove(item) {
     Item.delete({ id: item._id }, function(res) {
       console.log(res);
     }, function(err) {

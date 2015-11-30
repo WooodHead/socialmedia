@@ -7,113 +7,124 @@
 function CalendarCtrl($routeParams, $location, Items, socket, uiCalendarConfig) {
   var vm = this;
 
-  vm.uiConfig = { calendar: {
-    defaultDate: new Date($routeParams.year, $routeParams.month, $routeParams.day),
-    defaultView: 'basicWeek',
-    firstDay: 1,
-    header: {
-      left: 'month basicWeek',
-      center: 'title',
-      right: ' today prev,next'
-    },
-    eventRender: function(event, element, view) {
-      console.log(element);
-      element[0].id = event._id;
-
-      return element;
-  }}};
+  // FullCalendar
+  vm.uiConfig = uiConfig();
+  vm.eventSources = eventSources();
 
   // We will cache the items retrieved via http
   // and then keep them up-to-date via socket.io
-  vm.cachedItems = [];
-  vm.cachedWeek = -1;
-  vm.cachedMonth = -1;
-  vm.previousView = '';
+  var cachedItems = [];
+  var cachedWeek = -1;
+  var cachedMonth = -1;
+  var previousView = '';
 
-  vm.eventSources = [{
-    // Create the required fields for fullCalendar, as well as some optional ones
-    eventDataTransform: function(item) {
-      item.id = item._id;
-      if(item.content && item.content.message)
-        item.title = item.content.message;
-      item.url = '#/edit/' + item._id;
-      item.start = new Date(item.scheduled);
-      return item;
-    },
-    events: function(start, end, timezone, callback) {
-      var view = uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('getView').type;
-      $location.path('/calendar/' + start.year() + '/' + start.month() + '/' + start.date(), false);
+  function uiConfig() {
+    return {
+      calendar: {
+        defaultDate: new Date($routeParams.year, $routeParams.month, $routeParams.day),
+        defaultView: 'basicWeek',
+        firstDay: 1,
+        header: {
+          left: 'month basicWeek',
+          center: 'title',
+          right: ' today prev,next'
+        },
+        eventRender: function(event, element, view) {
+          console.log(element);
+          element[0].id = event._id;
 
-      console.log(view, start.month(), vm.cachedMonth, start.isoWeek(), vm.cachedWeek);
-
-      // We already received the new item via the socket
-      if(view === vm.previousView &&
-          (view === 'month' && start.month() === vm.cachedMonth ||
-          view === 'basicWeek' && start.isoWeek() === vm.cachedWeek)) {
-            console.log('cached', vm.cachedWeek, vm.cachedMonth);
-            return callback(vm.cachedItems);
-      } else {
-        // Remove month listeners
-        socket.removeAllListeners('items:month:' + vm.cachedMonth + ':new');
-        socket.removeAllListeners('items:month:' + vm.cachedMonth + ':edit');
-        socket.removeAllListeners('items:month:' + vm.cachedMonth + ':delete');
-
-        // Remove week listeners
-        socket.removeAllListeners('items:week:' + vm.cachedWeek + ':new');
-        socket.removeAllListeners('items:week:' + vm.cachedWeek + ':edit');
-        socket.removeAllListeners('items:week:' + vm.cachedWeek + ':delete');
-
-        // Clear caches
-        vm.cachedItems = [];
-        vm.previousView = '';
-        vm.cachedMonth = vm.cachedWeek = -1;
-      }
-
-      // Mongoose query for fetching items scheduled for this time period
-      var query = { scheduled: {
-        $gte: start.format('YYYY-MM-DD'),
-        $lte: end.format('YYYY-MM-DD')
-      }};
-
-      // Fetch and cache the items
-      Items.get({ query: query }, function(res) {
-        vm.cachedItems = res;
-        vm.previousView = view;
-
-        if(view === 'month') vm.cachedMonth = start.month();
-        else if(view === 'basicWeek') vm.cachedWeek = start.isoWeek();
-
-        callback(vm.cachedItems);
-      }, function(err) {
-        console.error(err);
-      });
-
-      switch (view) {
-        case 'month':
-          socket.on('items:month:' + start.month() + ':new', vm.onNewItem);
-          socket.on('items:month:' + start.month() + ':edit', vm.onItemUpdate);
-          socket.on('items:month:' + start.month() + ':delete', vm.onItemDelete);
-          break;
-        case 'basicWeek':
-          socket.on('items:week:' + start.isoWeek() + ':new', vm.onNewItem);
-          socket.on('items:week:' + start.isoWeek() + ':edit', vm.onItemUpdate);
-          socket.on('items:week:' + start.isoWeek() + ':delete', vm.onItemDelete);
-          break;
+          return element;
+        }
       }
     }
-  }];
+  }
 
-  vm.onNewItem = function(item) {
-    vm.cachedItems.push(item);
+  function eventSources() {
+    return [{
+      // Create the required fields for fullCalendar, as well as some optional ones
+      eventDataTransform: function(item) {
+        item.id = item._id;
+        if(item.content && item.content.message)
+          item.title = item.content.message;
+        item.url = '#/edit/' + item._id;
+        item.start = new Date(item.scheduled);
+        return item;
+      },
+      events: function(start, end, timezone, callback) {
+        var view = uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('getView').type;
+        $location.path('/calendar/' + start.year() + '/' + start.month() + '/' + start.date(), false);
+
+        console.log(view, start.month(), cachedMonth, start.isoWeek(), cachedWeek);
+
+        // We already received the new item via the socket
+        if(view === previousView &&
+            (view === 'month' && start.month() === cachedMonth ||
+            view === 'basicWeek' && start.isoWeek() === cachedWeek)) {
+              console.log('cached', cachedWeek, cachedMonth);
+              return callback(cachedItems);
+        } else {
+          // Remove month listeners
+          socket.removeAllListeners('items:month:' + cachedMonth + ':new');
+          socket.removeAllListeners('items:month:' + cachedMonth + ':edit');
+          socket.removeAllListeners('items:month:' + cachedMonth + ':delete');
+
+          // Remove week listeners
+          socket.removeAllListeners('items:week:' + cachedWeek + ':new');
+          socket.removeAllListeners('items:week:' + cachedWeek + ':edit');
+          socket.removeAllListeners('items:week:' + cachedWeek + ':delete');
+
+          // Clear caches
+          cachedItems = [];
+          previousView = '';
+          cachedMonth = cachedWeek = -1;
+        }
+
+        // Mongoose query for fetching items scheduled for this time period
+        var query = { scheduled: {
+          $gte: start.format('YYYY-MM-DD'),
+          $lte: end.format('YYYY-MM-DD')
+        }};
+
+        // Fetch and cache the items
+        Items.get({ query: query }, function(res) {
+          cachedItems = res;
+          previousView = view;
+
+          if(view === 'month') cachedMonth = start.month();
+          else if(view === 'basicWeek') cachedWeek = start.isoWeek();
+
+          callback(cachedItems);
+        }, function(err) {
+          console.error(err);
+        });
+
+        switch (view) {
+          case 'month':
+            socket.on('items:month:' + start.month() + ':new', onNewItem);
+            socket.on('items:month:' + start.month() + ':edit', onItemUpdate);
+            socket.on('items:month:' + start.month() + ':delete', onItemDelete);
+            break;
+          case 'basicWeek':
+            socket.on('items:week:' + start.isoWeek() + ':new', onNewItem);
+            socket.on('items:week:' + start.isoWeek() + ':edit', onItemUpdate);
+            socket.on('items:week:' + start.isoWeek() + ':delete', onItemDelete);
+            break;
+        }
+      }
+    }];
+  };
+
+  function onNewItem(item) {
+    cachedItems.push(item);
     uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
   };
 
-  vm.onItemUpdate = function(item) {
+  function onItemUpdate(item) {
     console.log(item);
-    var index = vm.indexOfItem(item._id);
+    var index = indexOfItem(item._id);
 
     if(index !== null) {
-      vm.cachedItems[index] = item;
+      cachedItems[index] = item;
       uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
     } else {
       // TODO: Force refresh
@@ -121,11 +132,11 @@ function CalendarCtrl($routeParams, $location, Items, socket, uiCalendarConfig) 
     }
   };
 
-  vm.onItemDelete = function(item) {
+  function onItemDelete(item) {
     console.log(item);
-    var index = vm.indexOfItem(item._id);
+    var index = indexOfItem(item._id);
     if(index !== null) {
-      vm.cachedItems.splice(index, 1);
+      cachedItems.splice(index, 1);
       uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
     } else {
       // TODO: Force refresh
@@ -133,11 +144,11 @@ function CalendarCtrl($routeParams, $location, Items, socket, uiCalendarConfig) 
     }
   };
 
-  vm.indexOfItem = function(id) {
-    for (var i = 0; i < vm.cachedItems.length; i++)
-      if(vm.cachedItems[i]._id === id)
+  function indexOfItem(id) {
+    for (var i = 0; i < cachedItems.length; i++)
+      if(cachedItems[i]._id === id)
         return i;
 
     return null;
-  };
+  }
 };

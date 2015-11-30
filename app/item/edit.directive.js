@@ -15,44 +15,48 @@ function edit() {
       geo: '='
     },
     controller: function($scope, Items, Item, Upload) {
-      $scope.localLang = {
-        selectAll: 'Select all',
-        selectNone: 'Select none',
-        reset: 'Reset',
-        search: 'Search...',
-        nothingSelected: 'Nothing is selected'
-      };
+      var vm = $scope;
 
-      $scope.isScheduled = (new Date() < $scope.item.scheduled);
+      // Form fields
+      vm.clearImage = clearImage;
+      vm.localLang = defaultMultiSelectLabels();
+      vm.channelsText = setNothingSelectedText(vm.channelsText, 'Channels');
+      vm.countriesText = setNothingSelectedText(vm.countriesText, 'Countries');
+      vm.regionsText = setNothingSelectedText(vm.regionsText, 'Regions');
+      vm.citiesText = setNothingSelectedText(vm.citiesText, 'Cities');
+      vm.languagesText = setNothingSelectedText(vm.languagesText, 'Languages');
 
-      $scope.channelsText = JSON.parse(JSON.stringify($scope.localLang)); $scope.channelsText.nothingSelected = 'Channels';
-      $scope.countriesText = JSON.parse(JSON.stringify($scope.localLang)); $scope.countriesText.nothingSelected = 'Countries';
-      $scope.regionsText = JSON.parse(JSON.stringify($scope.localLang)); $scope.regionsText.nothingSelected = 'Regions';
-      $scope.citiesText = JSON.parse(JSON.stringify($scope.localLang)); $scope.citiesText.nothingSelected = 'Cities';
-      $scope.languagesText = JSON.parse(JSON.stringify($scope.localLang)); $scope.languagesText.nothingSelected = 'Languages';
+      // Send changes to server
+      vm.upload = upload;
+      vm.publish = publish;
+      vm.update = update;
+      vm.delete = remove;
 
-      $scope.publish = function() {
-        $scope.prepareData();
-        $scope.item = Items.save($scope.item, function(res) {
+      vm.prepareData = prepareData;
+      vm.isScheduled = (new Date() < vm.item.scheduled);
+
+      function publish() {
+        vm.prepareData();
+        vm.item = Items.save(vm.item, function(res) {
         }, function(err) {
           console.error(err);
         });
       };
 
-      $scope.update = function() {
-        $scope.prepareData();
-        Item.update({ id: $scope.item._id }, $scope.item, function(res) {
+      function update() {
+        vm.prepareData();
+        Item.update({ id: vm.item._id }, vm.item, function(res) {
         }, function(err) {
           console.error(err);
         });
       };
 
-      $scope.upload = function(file) {
+      function upload(file) {
         Upload.upload({
           url: '/upload',
           data: { item: file }
         }).then(function(res) {
-          $scope.item.content.media = {
+          vm.item.content.media = {
             fileName: res.data,
             fileUrl: 'http://localhost:3000/images/' + res.data,
             url: 'http://localhost:3000/images/' + res.data
@@ -62,22 +66,38 @@ function edit() {
         });
       };
 
-      $scope.remove = function() {
+      function clearImage() {
         // TODO: Delete the image from the server
-        $scope.item.content.media = { fileName: null, fileUrl: null, url: null };
+        vm.item.content.media = { fileName: null, fileUrl: null, url: null };
       };
 
-      $scope.delete = function() {
-        Item.delete({ id: $scope.item._id });
+      function remove() {
+        Item.delete({ id: vm.item._id });
       };
 
-      $scope.prepareData = function() {
-        if($scope.item.tags)
-          $scope.item.tags = $scope.item.tags.map(tag => tag.text);
+      function prepareData() {
+        if(vm.item.tags)
+          vm.item.tags = vm.item.tags.map(tag => tag.text);
 
-        if($scope.item.channels)
-          $scope.item.channels = $scope.item.channels.map(channel => channel._id);
+        if(vm.item.channels)
+          vm.item.channels = vm.item.channels.map(channel => channel._id);
       };
+
+      function setNothingSelectedText(translation, text) {
+        translation = JSON.parse(JSON.stringify(vm.localLang));
+        translation.nothingSelected = text;
+        return translation;
+      }
+
+      function defaultMultiSelectLabels() {
+        return {
+          selectAll: 'Select all',
+          selectNone: 'Select none',
+          reset: 'Reset',
+          search: 'Search...',
+          nothingSelected: 'Nothing is selected'
+        };
+      }
     },
   };
 }
