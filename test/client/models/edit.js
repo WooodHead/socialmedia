@@ -28,7 +28,7 @@ module.exports = {
       delete: function() { click('delete'); },
 
       // Only after the item was published
-      getId: function() { return getBinding('item._id'); }
+      getId: function() { return getBinding('vm.item._id'); }
     };
   }
 };

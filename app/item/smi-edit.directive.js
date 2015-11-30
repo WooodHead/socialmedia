@@ -41,10 +41,11 @@ function SmiEditCtrl($scope, Items, Item, Upload) {
   vm.delete = remove;
 
   vm.prepareData = prepareData;
-  vm.isScheduled = (new Date() < vm.item.scheduled);
+  vm.isScheduled = vm.item ? (new Date() < vm.item.scheduled) : false;
 
   function publish() {
     vm.prepareData();
+    console.log(vm.item);
     vm.item = Items.save(vm.item, function(res) {
     }, function(err) {
       console.error(err);
