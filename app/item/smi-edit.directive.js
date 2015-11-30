@@ -1,13 +1,13 @@
 (function() {
   angular
     .module('SocialMedia')
-    .directive('edit', edit);
+    .directive('smiEdit', smiEdit);
 })();
 
-function edit() {
+function smiEdit() {
   return {
     restrict: 'A',
-    templateUrl: 'views/item/edit.directive.jade',
+    templateUrl: 'views/item/smi-edit.directive.jade',
     scope: {
       item: '=',
       channels: '=',
