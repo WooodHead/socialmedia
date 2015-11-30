@@ -1,5 +1,5 @@
-div(ng-controller='PublishCtrl')
+div(ng-controller='PublishCtrl as publish')
   .col-md-5.col-md-offset-1
-    div(edit item='item' channels='channels' networks='networks' geo='geo')
+    div(edit item='publish.item' channels='publish.channels' networks='publish.networks' geo='publish.geo')
   .col-md-5
-    div(view item='item')
+    div(view item='publish.item')

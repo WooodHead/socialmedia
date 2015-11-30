@@ -4,23 +4,25 @@
     .controller('CrudRestCtrl', CrudRestCtrl);
 })();
 
-function CrudRestCtrl($scope, Items, Item) {
-  $scope.items = Items.get({});
+function CrudRestCtrl(Items, Item) {
+  var vm = this;
 
-  $scope.create = function() {
-    console.log($scope.item);
-    Items.save({}, $scope.item, function(res) {
+  vm.items = Items.get({});
+
+  vm.create = function() {
+    console.log(vm.item);
+    Items.save({}, vm.item, function(res) {
       console.log(res);
     }, function(err) {
       console.error(err);
     });
   };
 
-  $scope.update = function(item, data) {
+  vm.update = function(item, data) {
     Item.update({ id: item._id }, { name: data });
   };
 
-  $scope.delete = function(item) {
+  vm.delete = function(item) {
     Item.delete({ id: item._id }, function(res) {
       console.log(res);
     }, function(err) {

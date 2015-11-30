@@ -3,9 +3,11 @@
     .module('SocialMedia')
     .controller('PublishCtrl', PublishCtrl);
 
-  function PublishCtrl($scope, $routeParams, Channels, Countries, Regions, Cities, Languages, Items, Item) {
+  function PublishCtrl($routeParams, Channels, Countries, Regions, Cities, Languages, Items, Item) {
+    var vm = this;
+
     // HACK: Manually set the tick if the selected properties
-    $scope.setTicked = function(inputModel, outputModel) {
+    vm.setTicked = function(inputModel, outputModel) {
       console.log('setTicked', JSON.stringify(inputModel), JSON.stringify(outputModel));
       inputModel.forEach(function(input) {
         input.ticked = outputModel.indexOf(input._id) !== -1;
@@ -13,32 +15,32 @@
     };
 
     // HACK: Manually set the tick if the selected properties
-    $scope.tickAllSelected = function() {
-      $scope.setTicked($scope.channels, $scope.item.channels);
-      $scope.setTicked($scope.geo.countries, $scope.item.geo.countries);
-      $scope.setTicked($scope.geo.regions, $scope.item.geo.regions);
-      $scope.setTicked($scope.geo.cities, $scope.item.geo.cities);
-      $scope.setTicked($scope.geo.languages, $scope.item.geo.languages);
+    vm.tickAllSelected = function() {
+      vm.setTicked(vm.channels, vm.item.channels);
+      vm.setTicked(vm.geo.countries, vm.item.geo.countries);
+      vm.setTicked(vm.geo.regions, vm.item.geo.regions);
+      vm.setTicked(vm.geo.cities, vm.item.geo.cities);
+      vm.setTicked(vm.geo.languages, vm.item.geo.languages);
     };
 
-    $scope.networks = ['Facebook', 'Twitter', 'Google+'];
-    $scope.channels = Channels.get({}, function() { $scope.tickAllSelected(); });
-    $scope.geo = {
-      countries: Countries.get({}, function() { $scope.tickAllSelected(); }),
-      regions: Regions.get({}, function() { $scope.tickAllSelected(); }),
-      cities: Cities.get({}, function() { $scope.tickAllSelected(); }),
-      languages: Languages.get({}, function() { $scope.tickAllSelected(); }),
+    vm.networks = ['Facebook', 'Twitter', 'Google+'];
+    vm.channels = Channels.get({}, function() { vm.tickAllSelected(); });
+    vm.geo = {
+      countries: Countries.get({}, function() { vm.tickAllSelected(); }),
+      regions: Regions.get({}, function() { vm.tickAllSelected(); }),
+      cities: Cities.get({}, function() { vm.tickAllSelected(); }),
+      languages: Languages.get({}, function() { vm.tickAllSelected(); }),
     };
 
     if($routeParams.id) {
-      $scope.item = Item.get({ id: $routeParams.id }, function(res) {
-        $scope.item.scheduled = new Date($scope.item.scheduled);
-        $scope.tickAllSelected();
+      vm.item = Item.get({ id: $routeParams.id }, function(res) {
+        vm.item.scheduled = new Date(vm.item.scheduled);
+        vm.tickAllSelected();
       }, function(err) {
         console.error(err);
       });
     } else {
-      $scope.item = { };
+      vm.item = { };
     }
   }
 })();

@@ -4,8 +4,10 @@
     .controller('CalendarCtrl', CalendarCtrl);
 })();
 
-function CalendarCtrl($scope, $routeParams, $location, Items, socket, uiCalendarConfig) {
-  $scope.uiConfig = { calendar: {
+function CalendarCtrl($routeParams, $location, Items, socket, uiCalendarConfig) {
+  var vm = this;
+
+  vm.uiConfig = { calendar: {
     defaultDate: new Date($routeParams.year, $routeParams.month, $routeParams.day),
     defaultView: 'basicWeek',
     firstDay: 1,
@@ -23,12 +25,12 @@ function CalendarCtrl($scope, $routeParams, $location, Items, socket, uiCalendar
 
   // We will cache the items retrieved via http
   // and then keep them up-to-date via socket.io
-  $scope.cachedItems = [];
-  $scope.cachedWeek = -1;
-  $scope.cachedMonth = -1;
-  $scope.previousView = '';
+  vm.cachedItems = [];
+  vm.cachedWeek = -1;
+  vm.cachedMonth = -1;
+  vm.previousView = '';
 
-  $scope.eventSources = [{
+  vm.eventSources = [{
     // Create the required fields for fullCalendar, as well as some optional ones
     eventDataTransform: function(item) {
       item.id = item._id;
@@ -42,29 +44,29 @@ function CalendarCtrl($scope, $routeParams, $location, Items, socket, uiCalendar
       var view = uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('getView').type;
       $location.path('/calendar/' + start.year() + '/' + start.month() + '/' + start.date(), false);
 
-      console.log(view, start.month(), $scope.cachedMonth, start.isoWeek(), $scope.cachedWeek);
+      console.log(view, start.month(), vm.cachedMonth, start.isoWeek(), vm.cachedWeek);
 
       // We already received the new item via the socket
-      if(view === $scope.previousView &&
-          (view === 'month' && start.month() === $scope.cachedMonth ||
-          view === 'basicWeek' && start.isoWeek() === $scope.cachedWeek)) {
-            console.log('cached', $scope.cachedWeek, $scope.cachedMonth);
-            return callback($scope.cachedItems);
+      if(view === vm.previousView &&
+          (view === 'month' && start.month() === vm.cachedMonth ||
+          view === 'basicWeek' && start.isoWeek() === vm.cachedWeek)) {
+            console.log('cached', vm.cachedWeek, vm.cachedMonth);
+            return callback(vm.cachedItems);
       } else {
         // Remove month listeners
-        socket.removeAllListeners('items:month:' + $scope.cachedMonth + ':new');
-        socket.removeAllListeners('items:month:' + $scope.cachedMonth + ':edit');
-        socket.removeAllListeners('items:month:' + $scope.cachedMonth + ':delete');
+        socket.removeAllListeners('items:month:' + vm.cachedMonth + ':new');
+        socket.removeAllListeners('items:month:' + vm.cachedMonth + ':edit');
+        socket.removeAllListeners('items:month:' + vm.cachedMonth + ':delete');
 
         // Remove week listeners
-        socket.removeAllListeners('items:week:' + $scope.cachedWeek + ':new');
-        socket.removeAllListeners('items:week:' + $scope.cachedWeek + ':edit');
-        socket.removeAllListeners('items:week:' + $scope.cachedWeek + ':delete');
+        socket.removeAllListeners('items:week:' + vm.cachedWeek + ':new');
+        socket.removeAllListeners('items:week:' + vm.cachedWeek + ':edit');
+        socket.removeAllListeners('items:week:' + vm.cachedWeek + ':delete');
 
         // Clear caches
-        $scope.cachedItems = [];
-        $scope.previousView = '';
-        $scope.cachedMonth = $scope.cachedWeek = -1;
+        vm.cachedItems = [];
+        vm.previousView = '';
+        vm.cachedMonth = vm.cachedWeek = -1;
       }
 
       // Mongoose query for fetching items scheduled for this time period
@@ -75,43 +77,43 @@ function CalendarCtrl($scope, $routeParams, $location, Items, socket, uiCalendar
 
       // Fetch and cache the items
       Items.get({ query: query }, function(res) {
-        $scope.cachedItems = res;
-        $scope.previousView = view;
+        vm.cachedItems = res;
+        vm.previousView = view;
 
-        if(view === 'month') $scope.cachedMonth = start.month();
-        else if(view === 'basicWeek') $scope.cachedWeek = start.isoWeek();
+        if(view === 'month') vm.cachedMonth = start.month();
+        else if(view === 'basicWeek') vm.cachedWeek = start.isoWeek();
 
-        callback($scope.cachedItems);
+        callback(vm.cachedItems);
       }, function(err) {
         console.error(err);
       });
 
       switch (view) {
         case 'month':
-          socket.on('items:month:' + start.month() + ':new', $scope.onNewItem);
-          socket.on('items:month:' + start.month() + ':edit', $scope.onItemUpdate);
-          socket.on('items:month:' + start.month() + ':delete', $scope.onItemDelete);
+          socket.on('items:month:' + start.month() + ':new', vm.onNewItem);
+          socket.on('items:month:' + start.month() + ':edit', vm.onItemUpdate);
+          socket.on('items:month:' + start.month() + ':delete', vm.onItemDelete);
           break;
         case 'basicWeek':
-          socket.on('items:week:' + start.isoWeek() + ':new', $scope.onNewItem);
-          socket.on('items:week:' + start.isoWeek() + ':edit', $scope.onItemUpdate);
-          socket.on('items:week:' + start.isoWeek() + ':delete', $scope.onItemDelete);
+          socket.on('items:week:' + start.isoWeek() + ':new', vm.onNewItem);
+          socket.on('items:week:' + start.isoWeek() + ':edit', vm.onItemUpdate);
+          socket.on('items:week:' + start.isoWeek() + ':delete', vm.onItemDelete);
           break;
       }
     }
   }];
 
-  $scope.onNewItem = function(item) {
-    $scope.cachedItems.push(item);
+  vm.onNewItem = function(item) {
+    vm.cachedItems.push(item);
     uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
   };
 
-  $scope.onItemUpdate = function(item) {
+  vm.onItemUpdate = function(item) {
     console.log(item);
-    var index = $scope.indexOfItem(item._id);
+    var index = vm.indexOfItem(item._id);
 
     if(index !== null) {
-      $scope.cachedItems[index] = item;
+      vm.cachedItems[index] = item;
       uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
     } else {
       // TODO: Force refresh
@@ -119,11 +121,11 @@ function CalendarCtrl($scope, $routeParams, $location, Items, socket, uiCalendar
     }
   };
 
-  $scope.onItemDelete = function(item) {
+  vm.onItemDelete = function(item) {
     console.log(item);
-    var index = $scope.indexOfItem(item._id);
+    var index = vm.indexOfItem(item._id);
     if(index !== null) {
-      $scope.cachedItems.splice(index, 1);
+      vm.cachedItems.splice(index, 1);
       uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
     } else {
       // TODO: Force refresh
@@ -131,9 +133,9 @@ function CalendarCtrl($scope, $routeParams, $location, Items, socket, uiCalendar
     }
   };
 
-  $scope.indexOfItem = function(id) {
-    for (var i = 0; i < $scope.cachedItems.length; i++)
-      if($scope.cachedItems[i]._id === id)
+  vm.indexOfItem = function(id) {
+    for (var i = 0; i < vm.cachedItems.length; i++)
+      if(vm.cachedItems[i]._id === id)
         return i;
 
     return null;
