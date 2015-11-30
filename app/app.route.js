@@ -25,7 +25,7 @@
           geo: geoFetcher,
         }
       })
-      .when('/calendar/:year/:month/:day', { templateUrl: 'views/calendar' })
+      .when('/calendar/:year?/:month?/:day?', { templateUrl: 'views/calendar' })
       .when('/channels', createCrudRest('channelsService', 'channelService'))
       .when('/countries', createCrudRest('countriesService', 'countryService'))
       .when('/regions', createCrudRest('regionsService', 'regionService'))

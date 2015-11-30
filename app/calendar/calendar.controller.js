@@ -19,9 +19,13 @@ function CalendarCtrl($routeParams, $location, itemsService, socket, uiCalendarC
   var previousView = '';
 
   function uiConfig() {
+    var date = Object.keys($routeParams).length !== 0 ?
+      new Date($routeParams.year, $routeParams.month, $routeParams.day) :
+      new Date();
+
     return {
       calendar: {
-        defaultDate: new Date($routeParams.year, $routeParams.month, $routeParams.day),
+        defaultDate: date,
         defaultView: 'basicWeek',
         firstDay: 1,
         header: {
@@ -52,7 +56,7 @@ function CalendarCtrl($routeParams, $location, itemsService, socket, uiCalendarC
       },
       events: function(start, end, timezone, callback) {
         var view = uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('getView').type;
-        $location.path('/calendar/' + start.year() + '/' + start.month() + '/' + start.date(), false);
+        $location.path(datePath(start), false);
 
         console.log(view, start.month(), cachedMonth, start.isoWeek(), cachedWeek);
 
@@ -150,5 +154,9 @@ function CalendarCtrl($routeParams, $location, itemsService, socket, uiCalendarC
         return i;
 
     return null;
+  }
+
+  function datePath(date) {
+    return '/calendar/' + date.year() + '/' + date.month() + '/' + date.date();
   }
 };
