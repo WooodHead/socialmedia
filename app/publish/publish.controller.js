@@ -28,11 +28,11 @@
 
     // HACK: Manually set the tick if the selected properties
     function tickAllSelected() {
-      // setTicked(vm.channels, vm.item.channels);
-      // setTicked(vm.geo.countries, vm.item.geo.countries);
-      // setTicked(vm.geo.regions, vm.item.geo.regions);
-      // setTicked(vm.geo.cities, vm.item.geo.cities);
-      // setTicked(vm.geo.languages, vm.item.geo.languages);
+      setTicked(vm.channels, vm.item.channels);
+      setTicked(vm.geo.countries, vm.item.geo.countries);
+      setTicked(vm.geo.regions, vm.item.geo.regions);
+      setTicked(vm.geo.cities, vm.item.geo.cities);
+      setTicked(vm.geo.languages, vm.item.geo.languages);
     }
 
     // HACK: Manually set the tick if the selected properties

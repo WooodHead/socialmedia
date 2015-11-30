@@ -1,47 +1,47 @@
 div.card
   div.card-header Post a message
   div.card-block
-    span(ng-bind='item._id')
+    span(ng-bind='vm.item._id')
     div.card-text
-      div#channels(isteven-multi-select input-model='channels' output-model='item.channels' button-label='name' item-label='name' tick-property='ticked'
-        translation='channelsText')
+      div#channels(isteven-multi-select input-model='vm.channels' output-model='vm.item.channels' button-label='name' item-label='name' tick-property='ticked'
+        translation='vm.channelsText')
     div.card.text.m-t
-      select#network.form-control(ng-model='item.content.network')
-        option(ng-repeat='network in networks' value='{{network}}') {{network}}
+      select#network.form-control(ng-model='vm.item.content.network')
+        option(ng-repeat='network in vm.networks' value='{{network}}') {{network}}
     div.card-text
-      textarea#message.form-control(ng-model='item.content.message' rows=4)
+      textarea#message.form-control(ng-model='vm.item.content.message' rows=4)
     div#tags.card-text.m-t
-      tags-input(ng-model='item.tags')
+      tags-input(ng-model='vm.item.tags')
     div#media.card-text.m-t
-      button.btn.btn-block.btn-secondary(ngf-select='upload($file)' ng-hide='item.content.media.url') Add image
-      div(ng-show='item.content.media.url')
-        img.card-img-top.m-b(ng-src='{{item.content.media.url}}' style='height: 100px')
-        button.btn.btn-block.btn-primary(ng-click='clearImage()') Remove image
+      button.btn.btn-block.btn-secondary(ngf-select='vm.upload($file)' ng-hide='vm.item.content.media.url') Add image
+      div(ng-show='vm.item.content.media.url')
+        img.card-img-top.m-b(ng-src='{{vm.item.content.media.url}}' style='height: 100px')
+        button.btn.btn-block.btn-primary(ng-click='vm.clearImage()') Remove image
     div#scheduled.card-text.m-t
       label.btn.btn-secondary.btn-block
         input(type='checkbox' ng-model='isScheduled')
         |  Schedule
-      input(type='date' ng-show='isScheduled' ng-model='item.scheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
-      input(type='time' ng-show='isScheduled' ng-model='item.scheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
+      input(type='date' ng-show='isScheduled' ng-model='vm.item.scheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
+      input(type='time' ng-show='isScheduled' ng-model='vm.item.scheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
     div#geo.card-text.m-t
       label.btn.btn-secondary.btn-block
         input(type='checkbox' ng-model='isGeo')
         |  Geo-Targeting
       div(ng-show='isGeo')
-        div#countries.m-t(isteven-multi-select input-model='geo.countries' output-model='item.geo.countries'
+        div#countries.m-t(isteven-multi-select input-model='vm.geo.countries' output-model='vm.item.geo.countries'
           output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
-          translation='countriesText')
-        div#regions.m-t(isteven-multi-select input-model='geo.regions' output-model='item.geo.regions'
+          translation='vm.countriesText')
+        div#regions.m-t(isteven-multi-select input-model='vm.geo.regions' output-model='vm.item.geo.regions'
           output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
-          translation='regionsText')
-        div#cities.m-t(isteven-multi-select input-model='geo.cities' output-model='item.geo.cities'
+          translation='vm.regionsText')
+        div#cities.m-t(isteven-multi-select input-model='vm.geo.cities' output-model='vm.item.geo.cities'
           output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
-          translation='citiesText')
-        div#languages.m-t(isteven-multi-select input-model='geo.languages' output-model='item.geo.languages'
+          translation='vm.citiesText')
+        div#languages.m-t(isteven-multi-select input-model='vm.geo.languages' output-model='vm.item.geo.languages'
           output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
-          translation='languagesText')
+          translation='vm.languagesText')
     div.card-text.m-t
-      button#update.btn.btn-block.btn-primary(ng-show='item._id && isScheduled || item._id && !isScheduled' ng-click='update()') Update
-      button#schedule.btn.btn-block.btn-primary(ng-show='!item._id && isScheduled' ng-click='publish()') Schedule
-      button#publish.btn.btn-block.btn-primary(ng-show='!item._id && !isScheduled' ng-click='publish()') Publish
-      button#delete.btn.btn-block.btn-primary(ng-show='item._id' ng-click='delete()') Delete
+      button#update.btn.btn-block.btn-primary(ng-show='vm.item._id && isScheduled || vm.item._id && !isScheduled' ng-click='vm.update()') Update
+      button#schedule.btn.btn-block.btn-primary(ng-show='!vm.item._id && isScheduled' ng-click='vm.publish()') Schedule
+      button#publish.btn.btn-block.btn-primary(ng-show='!vm.item._id && !isScheduled' ng-click='vm.publish()') Publish
+      button#delete.btn.btn-block.btn-primary(ng-show='vm.item._id' ng-click='vm.delete()') Delete
