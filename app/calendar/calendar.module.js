@@ -3,6 +3,7 @@
     .module('SocialMedia.Calendar', [
       'btford.socket-io',
       'ui.calendar',
-      'ngLocationUpdate'
+      'ngLocationUpdate',
+      'ngDialog'
     ]);
 })();

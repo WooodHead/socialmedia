@@ -27,6 +27,7 @@
     "angular-ui-calendar": "~1.0.1",
     "ng-file-upload": "~10.0.4",
     "angular-xeditable": "~0.1.9",
-    "isteven-angular-multiselect": "angular-multi-select#~4.0.0"
+    "isteven-angular-multiselect": "angular-multi-select#~4.0.0",
+    "ng-dialog": "~0.5.6"
   }
 }

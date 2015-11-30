@@ -3,7 +3,7 @@
     .module('SocialMedia.Calendar')
     .controller('CalendarCtrl', CalendarCtrl);
 
-  function CalendarCtrl($routeParams, $location, itemsService, socket, uiCalendarConfig) {
+  function CalendarCtrl($routeParams, $location, itemsService, socket, uiCalendarConfig, ngDialog) {
     var vm = this;
 
     // FullCalendar
@@ -35,6 +35,16 @@
           eventRender: function(event, element, view) {
             element[0].id = event._id;
             return element;
+          },
+          eventClick: function(event, jsEvent, view) {
+            ngDialog.open({
+              template:
+                '<div smi-view item="item" style="display:flex;justify-content:center;align-items:center;"/>' +
+                '<a href="#/edit/' + event._id + '" class="btn btn-primary btn-block">Edit</a>',
+              controller: function($scope) { $scope.item = event; },
+              plain: true,
+              appendTo: '#dialog'
+            });
           }
         }
       }
@@ -47,7 +57,6 @@
           item.id = item._id;
           if(item.content && item.content.message)
             item.title = item.content.message;
-          item.url = '#/edit/' + item._id;
           item.start = new Date(item.scheduled);
           return item;
         },
