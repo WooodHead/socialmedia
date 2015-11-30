@@ -1,5 +1,5 @@
 (function() {
-  app.directive('edit', function() {
+  angular.module('SocialMedia').directive('edit', function() {
     return {
       restrict: 'A',
       templateUrl: 'views/item/edit.directive.jade',

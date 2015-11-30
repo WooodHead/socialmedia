@@ -1,5 +1,5 @@
 (function() {
-  app.factory('socket', function (socketFactory) {
+  angular.module('SocialMedia').factory('socket', function (socketFactory) {
     return socketFactory();
   });
 })();

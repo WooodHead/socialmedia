@@ -1,5 +1,5 @@
 (function() {
-  app.controller('CrudRestCtrl', function($scope, Items, Item) {
+  angular.module('SocialMedia').controller('CrudRestCtrl', function($scope, Items, Item) {
     $scope.items = Items.get({});
 
     $scope.create = function() {

@@ -1,5 +1,5 @@
 (function() {
-  app.controller('PublishCtrl', function($scope, $routeParams, Channels,
+  angular.module('SocialMedia').controller('PublishCtrl', function($scope, $routeParams, Channels,
     Countries, Regions, Cities, Languages, Items, Item) {
       // HACK: Manually set the tick if the selected properties
       $scope.setTicked = function(inputModel, outputModel) {

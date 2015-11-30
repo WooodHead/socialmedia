@@ -1,5 +1,5 @@
 (function() {
-  app.run(['$route', '$rootScope', '$location', function ($route, $rootScope, $location) {
+  angular.module('SocialMedia').run(['$route', '$rootScope', '$location', function ($route, $rootScope, $location) {
       var original = $location.path;
       $location.path = function (path, reload) {
           if (reload === false) {

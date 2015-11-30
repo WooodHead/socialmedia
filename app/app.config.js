@@ -1,5 +1,5 @@
 (function() {
-  app.config(['$routeProvider', '$httpProvider',
+  angular.module('SocialMedia').config(['$routeProvider', '$httpProvider',
     function($routeProvider, $httpProvider) {
       $routeProvider
         .when('/publish/', { templateUrl: 'views/publish' })

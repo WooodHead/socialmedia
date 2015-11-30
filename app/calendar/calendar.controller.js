@@ -1,5 +1,5 @@
 (function() {
-  app.controller('CalendarCtrl', function($scope, $routeParams, $location, Items, socket, uiCalendarConfig) {
+  angular.module('SocialMedia').controller('CalendarCtrl', function($scope, $routeParams, $location, Items, socket, uiCalendarConfig) {
     $scope.uiConfig = { calendar: {
       defaultDate: new Date($routeParams.year, $routeParams.month, $routeParams.day),
       defaultView: 'basicWeek',
