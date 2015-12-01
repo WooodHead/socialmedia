@@ -1,15 +1,18 @@
-div.card.p-a(ng-class='item.content.network')
-  div.scheduled.pull-right {{item.scheduled | date : 'short'}}
-  a.m-r(ng-repeat='channel in item.channels') {{channel.name}}
-  div.message.m-t {{item.content.message}}
-  img.m-t(ng-show='item.content.media.url' ng-src='{{item.content.media.url}}' style='width: 100%')
-  div.m-t(ng-show='item.content.network === "Facebook"')
-    a.m-r Like
-    a.m-r Comment
-    a.m-r Share
-    a.m-r.pull-right(ng-show='edit' href='#/edit/{{item._id}}') Edit
-  div.m-t(ng-show='item.content.network === "Twitter"')
-    a.m-r Reply
-    a.m-r Retweet
-    a.m-r Love
-    a.m-r.pull-right(ng-show='edit' href='#/edit/{{item._id}}') Edit
+.card(ng-class='item.content.network')
+  .card-header
+    span Preview message
+    a.pull-right(ng-show='edit' href='#/edit/{{item._id}}')
+      i.fa.fa-pencil.m-r
+  .card-block
+    .scheduled.pull-right {{item.scheduled | date : 'short'}}
+    a.m-r(ng-repeat='channel in item.channels') {{channel.name}}
+    div.message.m-t {{item.content.message}}
+    img.m-t(ng-show='item.content.media.url' ng-src='{{item.content.media.url}}' style='width: 100%')
+    div.m-t(ng-show='item.content.network === "Facebook"')
+      a.m-r Like
+      a.m-r Comment
+      a.m-r Share
+    div.m-t(ng-show='item.content.network === "Twitter"')
+      a.m-r Reply
+      a.m-r Retweet
+      a.m-r Love

@@ -3,8 +3,14 @@
     .module('SocialMedia.Calendar')
     .controller('CalendarCtrl', CalendarCtrl);
 
-  function CalendarCtrl($routeParams, $location, itemsService, channels, socket, uiCalendarConfig, ngDialog) {
+  function CalendarCtrl($scope, $routeParams, $location, itemsService, channels, socket, uiCalendarConfig, ngDialog) {
     var vm = this;
+
+
+    $scope.$on('$destroy', function() {
+      // Prevent leaks
+      ngDialog.close();
+    })
 
     vm.networks = [{ name: 'Facebook' }, { name:'Twitter' }];
     vm.networks.forEach(function(network) { network.ticked = true; });

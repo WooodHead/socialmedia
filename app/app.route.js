@@ -5,8 +5,16 @@
 
   function routes($routeProvider, $httpProvider) {
     $routeProvider
-      .when('/publish/', publish())
-      .when('/edit/:id', publish())
+      .when('/publish/', {
+        templateUrl: 'views/publish',
+        controller: 'PublishCtrl',
+        controllerAs: 'publish',
+      })
+      .when('/edit/:id', {
+        templateUrl: 'views/publish',
+        controller: 'PublishCtrl',
+        controllerAs: 'publish',
+      })
       .when('/calendar/:year?/:month?/:day?', {
         templateUrl: 'views/calendar',
         controller: 'CalendarCtrl',
@@ -30,33 +38,6 @@
       resolve: {
         objectsService: pl,
         objectService: sg
-      }
-    };
-  }
-
-  function publish() {
-    return {
-      templateUrl: 'views/publish',
-      controller: 'PublishCtrl',
-      controllerAs: 'publish',
-      resolve: {
-        item: function(itemService, $route) {
-          if($route.current.params.id)
-            return itemService.get({ id: $route.current.params.id }).$promise;
-          else
-            return null;
-        },
-        channels: function(channelsService) { return channelsService.get().$promise; },
-        geo: function($q, countriesService, regionsService, citiesService, languagesService) {
-          var geo = {
-            countries: countriesService.get(),
-            regions: regionsService.get(),
-            cities: citiesService.get(),
-            languages: languagesService.get(),
-          };
-
-          return $q.all(geo).then(function(values) { return values; });
-        },
       }
     };
   }
