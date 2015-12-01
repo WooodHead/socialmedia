@@ -35,12 +35,21 @@
 
     // Send changes to server
     vm.upload = upload;
-    vm.publish = publish;
-    vm.update = update;
-    vm.delete = remove;
+    vm.submit = submit;
 
     vm.prepareData = prepareData;
     vm.isScheduled = vm.item ? (new Date() < vm.item.scheduled) : false;
+
+    function submit() {
+      vm.noChannels = vm.item.channels.length === 0;
+      vm.noNetwork = !vm.item.content.network || vm.item.content.network.length === 0;
+      if(vm.noChannels || vm.noNetwork) return;
+
+      if(vm.item._id && vm.isScheduled || vm.item._id && !vm.isScheduled) return update();
+      if(!vm.item._id && vm.isScheduled) return publish();
+      if(!vm.item._id && !vm.isScheduled) return publish();
+      if(vm.item._id) return remove();
+    };
 
     function publish() {
       vm.prepareData();
