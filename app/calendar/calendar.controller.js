@@ -6,9 +6,19 @@
   function CalendarCtrl($routeParams, $location, itemsService, socket, uiCalendarConfig, ngDialog) {
     var vm = this;
 
+    vm.networks = [{ name: 'Facebook' }, { name:'Twitter' }];
+    vm.networks.forEach(function(network) { network.ticked = true; });
+    vm.networkClick = function(network) {
+      console.log(network);
+      vm.filter.changed = true;
+      uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
+    };
+
     // FullCalendar
     vm.uiConfig = uiConfig();
     vm.eventSources = eventSources();
+
+    vm.filter = { networks: vm.networks };
 
     // We will cache the items retrieved via http
     // and then keep them up-to-date via socket.io
@@ -61,41 +71,54 @@
           return item;
         },
         events: function(start, end, timezone, callback) {
+          console.log(start);
           var view = uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('getView').type;
           $location.update_path(datePath(start), true);
 
-          // We already received the new item via the socket
-          if(view === previousView &&
-              (view === 'month' && start.month() === cachedMonth ||
-              view === 'basicWeek' && start.isoWeek() === cachedWeek)) {
-                return callback(cachedItems);
+          if(vm.filter.changed) {
+            console.log('filter change');
           } else {
-            // Remove month listeners
-            socket.removeAllListeners('items:month:' + cachedMonth + ':new');
-            socket.removeAllListeners('items:month:' + cachedMonth + ':edit');
-            socket.removeAllListeners('items:month:' + cachedMonth + ':delete');
+            // We already received the new item via the socket
+            if(view === previousView &&
+                (view === 'month' && start.month() === cachedMonth ||
+                view === 'basicWeek' && start.isoWeek() === cachedWeek)) {
+                  return callback(cachedItems);
+            } else {
+              // Remove month listeners
+              socket.removeAllListeners('items:month:' + cachedMonth + ':new');
+              socket.removeAllListeners('items:month:' + cachedMonth + ':edit');
+              socket.removeAllListeners('items:month:' + cachedMonth + ':delete');
 
-            // Remove week listeners
-            socket.removeAllListeners('items:week:' + cachedWeek + ':new');
-            socket.removeAllListeners('items:week:' + cachedWeek + ':edit');
-            socket.removeAllListeners('items:week:' + cachedWeek + ':delete');
+              // Remove week listeners
+              socket.removeAllListeners('items:week:' + cachedWeek + ':new');
+              socket.removeAllListeners('items:week:' + cachedWeek + ':edit');
+              socket.removeAllListeners('items:week:' + cachedWeek + ':delete');
 
-            // Clear caches
-            cachedItems = [];
-            previousView = '';
-            cachedMonth = cachedWeek = -1;
+              // Clear caches
+              cachedItems = [];
+              previousView = '';
+              cachedMonth = cachedWeek = -1;
+            }
           }
 
+          console.log('constructing query', JSON.stringify(vm.filter));
+
           // Mongoose query for fetching items scheduled for this time period
-          var query = { scheduled: {
-            $gte: start.format('YYYY-MM-DD'),
-            $lte: end.format('YYYY-MM-DD')
-          }};
+          var query = {
+            scheduled: {
+              $gte: start.format('YYYY-MM-DD'),
+              $lte: end.format('YYYY-MM-DD')
+            },
+            'content.network': { $in: vm.filter.networks.map(x => x.name) }
+          };
+
+          vm.query = query;
 
           // Fetch and cache the items
           itemsService.get({ query: query }, function(res) {
             cachedItems = res;
             previousView = view;
+            vm.filter.changed = false;
 
             if(view === 'month') cachedMonth = start.month();
             else if(view === 'basicWeek') cachedWeek = start.isoWeek();
@@ -121,12 +144,23 @@
       }];
     };
 
+    function filterItem(item) {
+      for (var i = 0; i < vm.filter.networks.length; i++) {
+        if(vm.filter.networks[i].name === item.content.network)
+          return true;
+      }
+
+      return false;
+    };
+
     function onNewItem(item) {
+      if(!filterItem(item)) return;
       cachedItems.push(item);
       uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
     };
 
     function onItemUpdate(item) {
+      if(!filterItem(item)) return;
       var index = indexOfItem(item._id);
 
       if(index !== null) {
@@ -139,6 +173,7 @@
     };
 
     function onItemDelete(item) {
+      if(!filterItem(item)) return;
       var index = indexOfItem(item._id);
       if(index !== null) {
         cachedItems.splice(index, 1);

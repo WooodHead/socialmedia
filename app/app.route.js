@@ -7,7 +7,14 @@
     $routeProvider
       .when('/publish/', publish())
       .when('/edit/:id', publish())
-      .when('/calendar/:year?/:month?/:day?', { templateUrl: 'views/calendar' })
+      .when('/calendar/:year?/:month?/:day?', {
+        templateUrl: 'views/calendar',
+        controller: 'CalendarCtrl',
+        controllerAs: 'calendar',
+        // resolve: {
+        //   channels: function(channelsService) { return channelsService.get().$promise; }
+        // }
+      })
       .when('/channels', createCrudRest('channelsService', 'channelService'))
       .when('/countries', createCrudRest('countriesService', 'countryService'))
       .when('/regions', createCrudRest('regionsService', 'regionService'))
