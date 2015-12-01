@@ -16,7 +16,7 @@ var items = require('./routes/items').handleRequests();
 
 var app = express();
 
-mongoose.connect('mongodb://localhost/socialmedia');
+mongoose.connect('mongodb://46.101.116.17:27017/socialmedia');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'app'));
