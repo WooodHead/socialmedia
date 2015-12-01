@@ -1,0 +1,14 @@
+{
+    "extends": "airbnb",
+    "env": {
+      "browser": true,
+      "protractor": true
+    },
+    "globals": {
+      "angular": true
+    },
+    "rules": {
+      "no-use-before-define": [2, "nofunc"],
+      "no-var": 0
+    }
+}

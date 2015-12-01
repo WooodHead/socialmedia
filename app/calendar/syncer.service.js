@@ -7,7 +7,7 @@
     var config = {
       model: null,
       filter: null,
-      emit: null
+      emit: null,
     };
 
     return {
@@ -15,7 +15,7 @@
       filter: filter,
       subscribeWeek: subscribeWeek,
       subscribeMonth: subscribeMonth,
-      removeSubscriptions: removeSubscriptions
+      removeSubscriptions: removeSubscriptions,
     };
 
     function activate(model, filter, onUpdate) {
@@ -25,7 +25,7 @@
     }
 
     function filter() {
-      return config.model.filter(function(item) {
+      return config.model.filter(function filterItems(item) {
         return filterItem(item);
       });
     }
@@ -54,58 +54,56 @@
 
     function filterItem(item) {
       return filterNetwork(item) && filterChannels(item);
-    };
+    }
 
     function filterNetwork(item) {
       for (var i = 0; i < config.filter.networks.length; i++) {
-        if(config.filter.networks[i].name === item.content.network)
+        if (config.filter.networks[i].name === item.content.network)
           return true;
       }
 
       return false;
-    };
+    }
 
     function filterChannels(item) {
       for (var i = 0; i < config.filter.channels.length; i++) {
         for (var k = 0; k < item.channels.length; k++) {
           var id = typeof(item.channels[k]) === 'object' ? item.channels[k]._id : item.channels[k];
-          if(config.filter.channels[i]._id === id)
-            return true;
+          if (config.filter.channels[i]._id === id) { return true; }
         }
       }
 
-
       return false;
-    };
+    }
 
     function onNewItem(item) {
-      if(!filterItem(item)) return;
+      if (!filterItem(item)) return;
       config.model.push(item);
       config.emit();
-    };
+    }
 
     function onItemUpdate(item) {
-      if(!filterItem(item)) return;
+      if (!filterItem(item)) return;
       var index = indexOfItem(item._id);
 
-      if(index !== null) {
+      if (index !== null) {
         config.model[index] = item;
         config.emit();
       }
-    };
+    }
 
     function onItemDelete(item) {
-      if(!filterItem(item)) return;
+      if (!filterItem(item)) return;
       var index = indexOfItem(item._id);
-      if(index !== null) {
+      if (index !== null) {
         config.model.splice(index, 1);
         config.emit();
       }
-    };
+    }
 
     function indexOfItem(id) {
       for (var i = 0; i < config.model.length; i++)
-        if(config.model[i]._id === id)
+        if (config.model[i]._id === id)
           return i;
 
       return null;

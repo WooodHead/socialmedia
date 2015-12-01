@@ -12,24 +12,19 @@
     vm.update = update;
 
     function create() {
-      (vm.item);
-      objectsService.save({}, vm.item, function(res) {
-        (res);
-      }, function(err) {
+      objectsService.save({}, vm.item, null, function objectsSaved(err) {
         console.error(err);
       });
-    };
+    }
 
     function update(item, data) {
       objectService.update({ id: item._id }, { name: data });
-    };
+    }
 
     function remove(item) {
-      objectService.delete({ id: item._id }, function(res) {
-        (res);
-      }, function(err) {
+      objectService.delete({ id: item._id }, null, function objectSaveError(err) {
         console.error(err);
       });
-    };
+    }
   }
 })();

@@ -1,9 +1,9 @@
 (function() {
   angular
     .module('SocialMedia')
-    .config(['$routeProvider', '$httpProvider', routes]);
+    .config(['$routeProvider', routes]);
 
-  function routes($routeProvider, $httpProvider) {
+  function routes($routeProvider) {
     $routeProvider
       .when('/publish/', {
         templateUrl: 'views/publish',
@@ -25,8 +25,8 @@
         controller: 'CalendarCtrl',
         controllerAs: 'calendar',
         resolve: {
-          channels: function(channelsService) { return channelsService.get().$promise; }
-        }
+          channels: function channelsPromise(channelsService) { return channelsService.get().$promise; },
+        },
       })
       .when('/channels', createCrudRest('channelsService', 'channelService'))
       .when('/countries', createCrudRest('countriesService', 'countryService'))
@@ -42,8 +42,8 @@
       controllerAs: 'crudRest',
       resolve: {
         objectsService: pl,
-        objectService: sg
-      }
+        objectService: sg,
+      },
     };
   }
 })();

@@ -4,6 +4,6 @@
       'btford.socket-io',
       'ui.calendar',
       'ngLocationUpdate',
-      'ngDialog'
+      'ngDialog',
     ]);
 })();

@@ -4,6 +4,6 @@
     'SocialMedia.Calendar',
     'SocialMedia.Publish',
     'ngRoute',
-    ]
+  ]
   );
 })();

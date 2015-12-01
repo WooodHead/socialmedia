@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var mocha = require('gulp-mocha');
 var istanbul = require('gulp-istanbul');
 var nodemon = require('gulp-nodemon');
+var eslint = require('gulp-eslint');
 var protractor = require('gulp-angular-protractor');
 
 gulp.task('default', function() {
@@ -35,4 +36,12 @@ gulp.task('test-client', ['start-testing-server'], function() {
       args: ['--baseUrl', 'http://localhost:3000']
     }))
     .on('error', function(e) { throw e; });
+});
+
+gulp.task('lint', function () {
+  gulp
+    .src(['**/*.js','!node_modules/**'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });

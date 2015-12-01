@@ -14,13 +14,13 @@
 
     function createPluralResource($resource) {
       return $resource('/api/' + version + '/' + plural.toLowerCase() + '?populate=channels', [], {
-        get: { method: 'GET', isArray: true }
+        get: { method: 'GET', isArray: true },
       });
     }
 
     function createSingularResource($resource) {
       return $resource('/api/' + version + '/' + plural.toLowerCase() + '/:id?populate=channels', [], {
-        update: { method: 'PATCH' }
+        update: { method: 'PATCH' },
       });
     }
   }
