@@ -1,6 +1,7 @@
 .card(ng-class='item.content.network')
   .card-header
-    span Preview message
+    span(ng-hide='item._id') Message preview
+    a(ng-show='item._id' href='#view/{{item._id}}') Message preview
     a.pull-right(ng-show='edit' href='#/edit/{{item._id}}')
       i.fa.fa-pencil.m-r
   .card-block

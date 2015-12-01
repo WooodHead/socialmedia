@@ -23,12 +23,19 @@ module.exports = {
         clear('message');
         type('message', message);
       },
-      publish: function() { click('publish'); },
+      publish: function() {
+        click('publish');
+        browser.refresh();
+      },
       update: function() { click('update'); },
       delete: function() { click('delete'); },
 
-      // Only after the item was published
-      getId: function() { return getBinding('vm.item._id'); }
+      getId: function() {
+        return browser.getCurrentUrl().then(function(url) {
+          var urlSplit = url.split('/');
+          return urlSplit[urlSplit.length - 1];
+        })
+      }
     };
   }
 };

@@ -19,9 +19,9 @@
     };
   }
 
-  SmiEditCtrl.$inject = ['$scope', 'itemsService', 'itemService', 'Upload'];
+  // SmiEditCtrl.$inject = ['$scope', 'itemsService', 'itemService', 'Upload'];
 
-  function SmiEditCtrl($scope, itemsService, itemService, Upload) {
+  function SmiEditCtrl($scope, $location, itemsService, itemService, Upload) {
     var vm = this;
 
     // Form fields
@@ -44,8 +44,9 @@
 
     function publish() {
       vm.prepareData();
-      (vm.item);
       vm.item = itemsService.save(vm.item, function(res) {
+        vm.item.scheduled = new Date(vm.item.scheduled);
+        $location.path('view/' + vm.item._id);
       }, function(err) {
         console.error(err);
       });
@@ -53,7 +54,9 @@
 
     function update() {
       vm.prepareData();
-      itemService.update({ id: vm.item._id }, vm.item, function(res) {
+      vm.item = itemService.update({ id: vm.item._id }, vm.item, function(res) {
+        vm.item.scheduled = new Date(scheduled);
+        $location.path('view/' + vm.item._id);
       }, function(err) {
         console.error(err);
       });
@@ -81,6 +84,7 @@
 
     function remove() {
       itemService.delete({ id: vm.item._id });
+      $location.path('calendar');
     };
 
     function prepareData() {

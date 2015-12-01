@@ -10,6 +10,11 @@
         controller: 'PublishCtrl',
         controllerAs: 'publish',
       })
+      .when('/view/:id', {
+        templateUrl: 'views/publish',
+        controller: 'PublishCtrl',
+        controllerAs: 'publish',
+      })
       .when('/edit/:id', {
         templateUrl: 'views/publish',
         controller: 'PublishCtrl',

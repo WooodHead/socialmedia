@@ -19,7 +19,7 @@
     }
 
     function createSingularResource($resource) {
-      return $resource('/api/' + version + '/' + plural.toLowerCase() + '/:id', [], {
+      return $resource('/api/' + version + '/' + plural.toLowerCase() + '/:id?populate=channels', [], {
         update: { method: 'PATCH' }
       });
     }

@@ -1,7 +1,6 @@
 div#smi-edit.card
   div.card-header Post a message
   div.card-block
-    span(ng-bind='vm.item._id')
     div.card-text
       div#channels(isteven-multi-select input-model='vm.channels' output-model='vm.item.channels' button-label='name' item-label='name' tick-property='ticked'
         translation='vm.channelsText')
