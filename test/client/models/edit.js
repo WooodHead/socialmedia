@@ -25,7 +25,6 @@ module.exports = {
       },
       publish: function() {
         click('publish');
-        browser.refresh();
       },
       update: function() { click('update'); },
       delete: function() { click('delete'); },
@@ -33,6 +32,7 @@ module.exports = {
       getId: function() {
         return browser.getCurrentUrl().then(function(url) {
           var urlSplit = url.split('/');
+          console.log(urlSplit[urlSplit.length - 1]);
           return urlSplit[urlSplit.length - 1];
         })
       }

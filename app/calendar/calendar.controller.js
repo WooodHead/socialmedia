@@ -49,7 +49,6 @@
             right: ' today prev,next'
           },
           eventRender: function(event, element, view) {
-
             element[0].id = event._id;
             if(view.intervalUnit === 'week')
               element[0].innerHTML =
