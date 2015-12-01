@@ -1,6 +1,6 @@
 div#smi-edit.card
   div.card-header Post a message
-  form.card-block(name='itemForm' ng-submit='vm.submit()')
+  form.card-block
     div.card-text
       div#channels(isteven-multi-select name='channels' input-model='vm.channels' output-model='vm.item.channels' button-label='name' item-label='name' tick-property='ticked'
         translation='vm.channelsText')
@@ -10,13 +10,13 @@ div#smi-edit.card
         option(ng-repeat='network in vm.networks' value='{{network}}') {{network}}
       .text-danger.m-t(ng-show='vm.noNetwork') Please select a network
     div.card-text
-      textarea#message.form-control(ng-model='vm.item.content.message' rows=4 required)
+      textarea#message.form-control(ng-model='vm.item.content.message' rows=4)
     div#tags.card-text.m-t
       tags-input(ng-model='vm.item.tags')
     div#media.card-text.m-t
-      button.btn.btn-block.btn-secondary(ngf-select='vm.upload($file)' ng-hide='vm.item.content.media.url') Add image
-      div(ng-show='vm.item.content.media.url')
-        img.card-img-top.m-b(ng-src='{{vm.item.content.media.url}}' style='height: 100px')
+      button.btn.btn-block.btn-secondary(ngf-select='vm.upload($file)' ng-hide='vm.item.content.media.fileUrl') Add image
+      div(ng-show='vm.item.content.media.fileUrl')
+        img.card-img-top.m-b(ng-src='{{vm.item.content.media.fileUrl}}' style='height: 100px')
         button.btn.btn-block.btn-primary(ng-click='vm.clearImage()') Remove image
     div#scheduled.card-text.m-t
       label.btn.btn-secondary.btn-block
@@ -42,7 +42,7 @@ div#smi-edit.card
           output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
           translation='vm.languagesText')
     div.card-text.m-t
-      button#update.btn.btn-block.btn-primary(type='submit' ng-show='vm.item._id && isScheduled || vm.item._id && !isScheduled') Update
-      button#schedule.btn.btn-block.btn-primary(type='submit' ng-show='!vm.item._id && isScheduled') Schedule
-      button#publish.btn.btn-block.btn-primary(type='submit' ng-show='!vm.item._id && !isScheduled') Publish
-      button#delete.btn.btn-block.btn-primary(type='submit' ng-show='vm.item._id') Delete
+      button#update.btn.btn-block.btn-primary(type='button' ng-show='vm.item._id && isScheduled || vm.item._id && !isScheduled' ng-click='vm.update()') Update
+      button#schedule.btn.btn-block.btn-primary(type='button' ng-show='!vm.item._id && isScheduled' ng-click='vm.publish()') Schedule
+      button#publish.btn.btn-block.btn-primary(type='button' ng-show='!vm.item._id && !isScheduled' ng-click='vm.publish()') Publish
+      button#delete.btn.btn-block.btn-primary(type='button' ng-show='vm.item._id' ng-click='vm.remove()') Delete

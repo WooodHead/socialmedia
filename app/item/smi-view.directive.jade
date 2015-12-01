@@ -8,7 +8,7 @@
     .scheduled.pull-right {{item.scheduled | date : 'short'}}
     a.m-r(ng-repeat='channel in item.channels') {{channel.name}}
     div.message.m-t {{item.content.message}}
-    img.m-t(ng-show='item.content.media.url' ng-src='{{item.content.media.url}}' style='width: 100%')
+    img.m-t(ng-show='item.content.media.fileUrl' ng-src='{{item.content.media.fileUrl}}' style='width: 100%')
     div.m-t(ng-show='item.content.network === "Facebook"')
       a.m-r Like
       a.m-r Comment

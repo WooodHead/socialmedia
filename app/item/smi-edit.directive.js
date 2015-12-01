@@ -35,23 +35,22 @@
 
     // Send changes to server
     vm.upload = upload;
-    vm.submit = submit;
+    vm.publish = publish;
+    vm.update = update;
+    vm.remove = remove;
 
     vm.prepareData = prepareData;
     vm.isScheduled = vm.item ? (new Date() < vm.item.scheduled) : false;
 
-    function submit() {
+    function isValid() {
+      console.log(vm.item.scheduled);
       vm.noChannels = vm.item.channels.length === 0;
-      vm.noNetwork = !vm.item.content.network || vm.item.content.network.length === 0;
-      if(vm.noChannels || vm.noNetwork) return;
-
-      if(vm.item._id && vm.isScheduled || vm.item._id && !vm.isScheduled) return update();
-      if(!vm.item._id && vm.isScheduled) return publish();
-      if(!vm.item._id && !vm.isScheduled) return publish();
-      if(vm.item._id) return remove();
+      vm.noNetwork = !vm.item.content || !vm.item.content.network || vm.item.content.network.length === 0;
+      return (!vm.noChannels && !vm.noNetwork)
     };
 
     function publish() {
+      if(!isValid()) return;
       vm.prepareData();
       vm.item = itemsService.save(vm.item, function(res) {
         vm.item.scheduled = new Date(vm.item.scheduled);
@@ -62,6 +61,7 @@
     };
 
     function update() {
+      if(!isValid()) return;
       vm.prepareData();
       vm.item = itemService.update({ id: vm.item._id }, vm.item, function(res) {
         vm.item.scheduled = new Date(scheduled);
@@ -79,7 +79,7 @@
         vm.item.content.media = {
           fileName: res.data,
           fileUrl: 'http://localhost:3000/images/' + res.data,
-          url: 'http://localhost:3000/images/' + res.data
+          // url: 'http://localhost:3000/images/' + res.data
         };
       }, function(err) {
         console.error(err);
