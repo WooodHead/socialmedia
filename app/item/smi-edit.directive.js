@@ -19,9 +19,7 @@
     };
   }
 
-  // SmiEditCtrl.$inject = ['$scope', 'itemsService', 'itemService', 'Upload'];
-
-  function SmiEditCtrl($scope, $location, itemsService, itemService, Upload) {
+  function SmiEditCtrl($scope, $location, $log, itemsService, itemService, Upload) {
     var vm = this;
 
     // Form fields
@@ -55,7 +53,7 @@
         vm.item.scheduled = new Date(vm.item.scheduled);
         $location.path('view/' + vm.item._id);
       }, function(err) {
-        console.error(err);
+        $log.error(err);
       });
     }
 
@@ -66,7 +64,7 @@
         vm.item.scheduled = new Date(vm.item.scheduled);
         $location.path('view/' + vm.item._id);
       }, function(err) {
-        console.error(err);
+        $log.error(err);
       });
     }
 
@@ -81,7 +79,7 @@
           // url: 'http://localhost:3000/images/' + res.data
         };
       }, function uploadError(err) {
-        console.error(err);
+        $log.error(err);
       });
     }
 
@@ -96,12 +94,12 @@
     }
 
     function prepareData() {
-      if (vm.item.tags) { vm.item.tags = vm.item.tags.map(tag => tag.text); }
-      if (vm.item.channels) { vm.item.channels = vm.item.channels.map(channel => channel._id); }
+      if (vm.item.tags) { vm.item.tags = vm.item.tags.map(function(tag) { return tag.text; }); }
+      if (vm.item.channels) { vm.item.channels = vm.item.channels.map(function(channel) { return channel._id; }); }
     }
 
     function setNothingSelectedText(translation, text) {
-      translation = JSON.parse(JSON.stringify(vm.localLang));
+      translation = angular.fromJson(angular.toJson(vm.localLang));
       translation.nothingSelected = text;
       return translation;
     }

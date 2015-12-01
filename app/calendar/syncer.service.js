@@ -68,7 +68,7 @@
     function filterChannels(item) {
       for (var i = 0; i < config.filter.channels.length; i++) {
         for (var k = 0; k < item.channels.length; k++) {
-          var id = typeof(item.channels[k]) === 'object' ? item.channels[k]._id : item.channels[k];
+          var id = angular.isObject(item.channels[k]) ? item.channels[k]._id : item.channels[k];
           if (config.filter.channels[i]._id === id) { return true; }
         }
       }

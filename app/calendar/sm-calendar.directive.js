@@ -1,9 +1,17 @@
 (function() {
   angular
     .module('SocialMedia.Calendar')
-    .controller('CalendarCtrl', CalendarCtrl);
+    .directive('smCalendar', smCalendar);
 
-  function CalendarCtrl($scope, provider, $routeParams, $location, itemsService, channels, socket, uiCalendarConfig, ngDialog) {
+  function smCalendar() {
+    return {
+      templateUrl: 'views/calendar/sm-calendar.directive.jade',
+      controllerAs: 'calendar',
+      controller: CalendarCtrl,
+    };
+  }
+
+  function CalendarCtrl($scope, $log, provider, $routeParams, channelsService, $location, itemsService, uiCalendarConfig, ngDialog) {
     var vm = this;
     var cachedItems = [];
     var cachedWeek = -1;
@@ -13,9 +21,13 @@
     $scope.$on('$destroy', function destroy() { ngDialog.closeAll(); });
 
     vm.networks = [{ name: 'Facebook' }, { name: 'Twitter' }];
-    vm.channels = channels;
     vm.networks.forEach(function tickNetworks(network) { network.ticked = true; });
-    vm.channels.forEach(function tickChannels(channel) { channel.ticked = true; });
+
+
+    channelsService.get().$promise.then(function channelsFulfilled(channels) {
+      vm.channels = channels;
+      vm.channels.forEach(function tickChannels(channel) { channel.ticked = true; });
+    })
 
     function refresh() {
       uiCalendarConfig.calendars.itemsCalendar.fullCalendar('refetchEvents');
@@ -48,7 +60,7 @@
             if (view.intervalUnit === 'week') {
               element[0].innerHTML =
                 '<span style="margin-right: 6px">' + event.scheduled.getHours() + ':' + event.scheduled.getMinutes() + '</span>' +
-                '<span>' + event.channels.map(x => x.name).join(', ') + '</span>' +
+                '<span>' + event.channels.map(function(channel) { return channel.name; }).join(', ') + '</span>' +
                 '<img style="width: 100%" src="' + event.content.media.fileUrl + '"/>' +
                 '<span>' + event.content.message + '</span>';
             }
@@ -118,7 +130,7 @@
 
             callback(provider.filter());
           }, function itemsServiceError(err) {
-            console.error(err);
+            $log.error(err);
           });
         },
       }];

@@ -1,33 +1,14 @@
 (function() {
   angular
     .module('SocialMedia')
-    .config(['$routeProvider', routes]);
+    .config(routes);
 
   function routes($routeProvider) {
     $routeProvider
-      .when('/publish/', {
-        templateUrl: 'views/publish',
-        controller: 'PublishCtrl',
-        controllerAs: 'publish',
-      })
-      .when('/view/:id', {
-        templateUrl: 'views/publish',
-        controller: 'PublishCtrl',
-        controllerAs: 'publish',
-      })
-      .when('/edit/:id', {
-        templateUrl: 'views/publish',
-        controller: 'PublishCtrl',
-        controllerAs: 'publish',
-      })
-      .when('/calendar/:year?/:month?/:day?', {
-        templateUrl: 'views/calendar',
-        controller: 'CalendarCtrl',
-        controllerAs: 'calendar',
-        resolve: {
-          channels: function channelsPromise(channelsService) { return channelsService.get().$promise; },
-        },
-      })
+      .when('/publish/', { template: '<div sm-publish/>' })
+      .when('/view/:id', { template: '<div sm-publish/>' })
+      .when('/edit/:id', { template: '<div sm-publish/>' })
+      .when('/calendar/:year?/:month?/:day?', { template: '<div sm-calendar/>', })
       .when('/channels', createCrudRest('channelsService', 'channelService'))
       .when('/countries', createCrudRest('countriesService', 'countryService'))
       .when('/regions', createCrudRest('regionsService', 'regionService'))

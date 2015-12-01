@@ -1,6 +1,0 @@
-div(ng-repeat='item in crudRest.items')
-  span(editable-text='item.name' onbeforesave='crudRest.update(item, $data)') {{item.name}}
-  button(type='button' ng-click='crudRest.delete(item)') Delete
-
-input(type='text' ng-model='crudRest.item.name')
-button.btn.btn-primary(type='button' ng-click='crudRest.create()') Create

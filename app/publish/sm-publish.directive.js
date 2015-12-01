@@ -1,7 +1,15 @@
 (function() {
   angular
     .module('SocialMedia')
-    .controller('PublishCtrl', PublishCtrl);
+    .directive('smPublish', smPublish);
+
+  function smPublish() {
+    return {
+      templateUrl: 'views/publish/sm-publish.directive.jade',
+      controller: PublishCtrl,
+      controllerAs: 'publish',
+    };
+  }
 
   function PublishCtrl($q, $route, $location, itemService, channelsService, countriesService, regionsService, citiesService, languagesService) {
     var vm = this;
