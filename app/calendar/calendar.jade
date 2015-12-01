@@ -1,6 +1,6 @@
 div.m-x
   div#dialog(style='position: absolute; z-index: 10; width: 100%')
   div
-    span#networks.m-r(isteven-multi-select input-model='calendar.networks' output-model='calendar.filter.networks' button-label='name' item-label='name' tick-property='ticked' on-item-click='calendar.filterChange(data)')
-    span#channels.m-r(isteven-multi-select input-model='calendar.channels' output-model='calendar.filter.channels' button-label='name' item-label='name' tick-property='ticked' on-item-click='calendar.filterChange(data)')
+    span#networks.m-r(isteven-multi-select input-model='calendar.networks' output-model='calendar.filter.networks' button-label='name' item-label='name' tick-property='ticked' on-item-click='calendar.refresh()')
+    span#channels.m-r(isteven-multi-select input-model='calendar.channels' output-model='calendar.filter.channels' button-label='name' item-label='name' tick-property='ticked' on-item-click='calendar.refresh()')
   div.m-t(ui-calendar='calendar.uiConfig.calendar' ng-model='calendar.eventSources' calendar='itemsCalendar')

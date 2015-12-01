@@ -3,26 +3,24 @@
     .module('SocialMedia.Calendar')
     .controller('CalendarCtrl', CalendarCtrl);
 
-  function CalendarCtrl($scope, $routeParams, $location, itemsService, channels, socket, uiCalendarConfig, ngDialog) {
+  function CalendarCtrl($scope, provider, $routeParams, $location, itemsService, channels, socket, uiCalendarConfig, ngDialog) {
     var vm = this;
 
-    $scope.$on('$destroy', function() {
-      ngDialog.closeAll();
-    })
+    $scope.$on('$destroy', function() { ngDialog.closeAll(); })
 
     vm.networks = [{ name: 'Facebook' }, { name:'Twitter' }];
     vm.networks.forEach(function(network) { network.ticked = true; });
     vm.channels = channels;
     vm.channels.forEach(function(channel) { channel.ticked = true; });
-    vm.filterChange = function(network) {
-      console.log(network);
-      vm.filter.changed = true;
+
+    function refresh() {
       uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
-    };
+    }
 
     // FullCalendar
     vm.uiConfig = uiConfig();
     vm.eventSources = eventSources();
+    vm.refresh = refresh;
 
     vm.filter = { networks: vm.networks };
 
@@ -83,38 +81,19 @@
           return item;
         },
         events: function(start, end, timezone, callback) {
-          console.log(start);
+          // Get the view type
           var view = uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('getView').type;
+
+          // Update the URL
           $location.update_path(datePath(start), true);
 
-          if(vm.filter.changed) {
-            console.log('filter change');
-          } else {
-            // We already received the new item via the socket
-            console.log('cache');
-            if(view === previousView &&
-                (view === 'month' && start.month() === cachedMonth ||
-                view === 'basicWeek' && start.isoWeek() === cachedWeek)) {
-                  return callback(cachedItems);
-            } else {
-              // Remove month listeners
-              socket.removeAllListeners('items:month:' + cachedMonth + ':new');
-              socket.removeAllListeners('items:month:' + cachedMonth + ':edit');
-              socket.removeAllListeners('items:month:' + cachedMonth + ':delete');
+          console.log('AAA');
 
-              // Remove week listeners
-              socket.removeAllListeners('items:week:' + cachedWeek + ':new');
-              socket.removeAllListeners('items:week:' + cachedWeek + ':edit');
-              socket.removeAllListeners('items:week:' + cachedWeek + ':delete');
-
-              // Clear caches
-              cachedItems = [];
-              previousView = '';
-              cachedMonth = cachedWeek = -1;
-            }
+          if(view === previousView &&
+              (view === 'month' && start.month() === cachedMonth ||
+              view === 'basicWeek' && start.isoWeek() === cachedWeek)) {
+            return callback(provider.filter());
           }
-
-          console.log('constructing query', JSON.stringify(vm.filter));
 
           // Mongoose query for fetching items scheduled for this time period
           var query = {
@@ -122,108 +101,32 @@
               $gte: start.format('YYYY-MM-DD'),
               $lte: end.format('YYYY-MM-DD')
             },
-            'content.network': { $in: vm.filter.networks.map(x => x.name) },
-            channels: vm.filter.channels
           };
 
-          vm.query = query;
-
           // Fetch and cache the items
-          itemsService.get({ populate: 'channels', query: query }, function(res) {
+          itemsService.get({ populate: 'channels'}, function(res) {
+            provider.removeSubscriptions(cachedWeek, cachedMonth);
+            previousView = '';
+            cachedMonth = cachedWeek = -1;
+
             cachedItems = res;
             previousView = view;
-            vm.filter.changed = false;
+
+            provider.initialize(cachedItems, vm.filter, refresh);
+
+            if(view === 'month') provider.subscribeMonth(start.month())
+            if(view === 'basicWeek') provider.subscribeWeek(start.isoWeek());
 
             if(view === 'month') cachedMonth = start.month();
             else if(view === 'basicWeek') cachedWeek = start.isoWeek();
 
-            callback(cachedItems);
+            callback(provider.filter());
           }, function(err) {
             console.error(err);
           });
-
-          if(!vm.filter.changed) {
-            switch (view) {
-              case 'month':
-                socket.on('items:month:' + start.month() + ':new', onNewItem);
-                socket.on('items:month:' + start.month() + ':edit', onItemUpdate);
-                socket.on('items:month:' + start.month() + ':delete', onItemDelete);
-                break;
-              case 'basicWeek':
-                socket.on('items:week:' + start.isoWeek() + ':new', onNewItem);
-                socket.on('items:week:' + start.isoWeek() + ':edit', onItemUpdate);
-                socket.on('items:week:' + start.isoWeek() + ':delete', onItemDelete);
-                break;
-            }
-          }
         }
       }];
     };
-
-    function filterItem(item) {
-      return filterNetwork(item) && filterChannels(item);
-    };
-
-    function filterNetwork(item) {
-      for (var i = 0; i < vm.filter.networks.length; i++) {
-        if(vm.filter.networks[i].name === item.content.network)
-          return true;
-      }
-
-      return false;
-    };
-
-    function filterChannels(item) {
-      console.log(item, vm.filter.channels);
-      for (var i = 0; i < vm.filter.networks.length; i++) {
-        for (var k = 0; k < item.channels.length; k++) {
-          var id = typeof(item.channels[k]) === 'object' ? item.channels[k]._id : item.channels[k];
-          if(vm.filter.channels[i]._id === id)
-            return true;
-        }
-      }
-
-      return false;
-    };
-
-    function onNewItem(item) {
-      if(!filterItem(item)) return;
-      cachedItems.push(item);
-      uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
-    };
-
-    function onItemUpdate(item) {
-      if(!filterItem(item)) return;
-      var index = indexOfItem(item._id);
-
-      if(index !== null) {
-        cachedItems[index] = item;
-        uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
-      } else {
-        // TODO: Force refresh
-        console.error('could not find item', index);
-      }
-    };
-
-    function onItemDelete(item) {
-      if(!filterItem(item)) return;
-      var index = indexOfItem(item._id);
-      if(index !== null) {
-        cachedItems.splice(index, 1);
-        uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
-      } else {
-        // TODO: Force refresh
-        console.error('could not find item', index);
-      }
-    };
-
-    function indexOfItem(id) {
-      for (var i = 0; i < cachedItems.length; i++)
-        if(cachedItems[i]._id === id)
-          return i;
-
-      return null;
-    }
 
     function datePath(date) {
       return '/calendar/' + date.year() + '/' + date.month() + '/' + date.date();
