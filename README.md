@@ -1,13 +1,8 @@
-# falconsocial
+# socialmedia
 
-## API
-* ```GET /api/items/```
-* ```PUT /api/items/``` => ```items:put(ids)```
-* ```POST /api/items/``` => ```items:post(id)```
-* ```DELETE /api/items/``` => ```items:delete:all()```
-* ```GET /api/items/:id```
-* ```PUT /api/items/:id``` => ```items:id:put(item)```, ```items:post(id)```
-* ```DELETE /api/items/:id``` => ```items:delete(id)```
+```node bin/www```
+
+```localhost:3000```
 
 * https://www.flickr.com/photos/inspirekelly/9827093964/
 * https://www.flickr.com/photos/zachinglis/5507648594/
