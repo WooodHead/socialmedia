@@ -6,10 +6,8 @@
   function CalendarCtrl($scope, $routeParams, $location, itemsService, channels, socket, uiCalendarConfig, ngDialog) {
     var vm = this;
 
-
     $scope.$on('$destroy', function() {
-      // Prevent leaks
-      ngDialog.close();
+      ngDialog.closeAll();
     })
 
     vm.networks = [{ name: 'Facebook' }, { name:'Twitter' }];
@@ -51,7 +49,14 @@
             right: ' today prev,next'
           },
           eventRender: function(event, element, view) {
+
             element[0].id = event._id;
+            if(view.intervalUnit === 'week')
+              element[0].innerHTML =
+                '<span style="margin-right: 6px">' + event.scheduled.getHours() + ':' + event.scheduled.getMinutes() + '</span>' +
+                '<span>' + event.channels.map(x => x.name).join(', ') + '</span>' +
+                '<img style="width: 100%" src="' + event.content.media.fileUrl + '"/>' +
+                '<span>' + event.content.message + '</span>';
             return element;
           },
           eventClick: function(event, jsEvent, view) {
@@ -60,24 +65,10 @@
                 '<div smi-view item="item" edit="true" style="display:flex;justify-content:center;align-items:center;"/>',
               controller: function($scope) { $scope.item = event; },
               plain: true,
+              disableAnimation: true,
               appendTo: '#dialog'
             });
           },
-          dayClick: function(date, jsEvent, view) {
-            ngDialog.open({
-              template:
-                '<div ng-repeat="item in items | filter : {scheduled: today} : comp" edit="true" smi-view item="item" style="display:flex;justify-content:center;align-items:center;"/>',
-              controller: function($scope) { $scope.items = cachedItems; $scope.today = date.toDate();
-                $scope.comp = function(actual, expected) {
-                  console.log((new Date(actual)), ' - ', expected);
-                  return (new Date(actual)).getYear() === expected.getYear() &&
-                    (new Date(actual)).getMonth() === expected.getMonth() &&
-                    (new Date(actual)).getDate() === expected.getDate();
-                }},
-              plain: true,
-              appendTo: '#dialog'
-            });
-          }
         }
       }
     }
@@ -86,10 +77,10 @@
       return [{
         // Create the required fields for fullCalendar, as well as some optional ones
         eventDataTransform: function(item) {
+          item.scheduled = new Date(item.scheduled);
           item.id = item._id;
-          if(item.content && item.content.message)
-            item.title = item.content.message;
           item.start = new Date(item.scheduled);
+          item.title = item.content.message
           return item;
         },
         events: function(start, end, timezone, callback) {
@@ -139,7 +130,7 @@
           vm.query = query;
 
           // Fetch and cache the items
-          itemsService.get({ query: query }, function(res) {
+          itemsService.get({ populate: 'channels', query: query }, function(res) {
             cachedItems = res;
             previousView = view;
             vm.filter.changed = false;
