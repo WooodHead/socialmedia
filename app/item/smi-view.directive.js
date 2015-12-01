@@ -8,7 +8,8 @@
       restrict: 'A',
       templateUrl: 'views/item/smi-view.directive.jade',
       scope: {
-        item: '='
+        item: '=',
+        edit: '=',
       }
     };
   }

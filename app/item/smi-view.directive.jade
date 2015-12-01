@@ -7,7 +7,9 @@ div.card.p-a(ng-class='item.content.network')
     a.m-r Like
     a.m-r Comment
     a.m-r Share
+    a.m-r.pull-right(ng-show='edit' href='#/edit/{{item._id}}') Edit
   div.m-t(ng-show='item.content.network === "Twitter"')
     a.m-r Reply
     a.m-r Retweet
     a.m-r Love
+    a.m-r.pull-right(ng-show='edit' href='#/edit/{{item._id}}') Edit

@@ -51,9 +51,23 @@
           eventClick: function(event, jsEvent, view) {
             ngDialog.open({
               template:
-                '<div smi-view item="item" style="display:flex;justify-content:center;align-items:center;"/>' +
-                '<a href="#/edit/' + event._id + '" class="btn btn-primary btn-block">Edit</a>',
+                '<div smi-view item="item" edit="true" style="display:flex;justify-content:center;align-items:center;"/>',
               controller: function($scope) { $scope.item = event; },
+              plain: true,
+              appendTo: '#dialog'
+            });
+          },
+          dayClick: function(date, jsEvent, view) {
+            ngDialog.open({
+              template:
+                '<div ng-repeat="item in items | filter : {scheduled: today} : comp" edit="true" smi-view item="item" style="display:flex;justify-content:center;align-items:center;"/>',
+              controller: function($scope) { $scope.items = cachedItems; $scope.today = date.toDate();
+                $scope.comp = function(actual, expected) {
+                  console.log((new Date(actual)), ' - ', expected);
+                  return (new Date(actual)).getYear() === expected.getYear() &&
+                    (new Date(actual)).getMonth() === expected.getMonth() &&
+                    (new Date(actual)).getDate() === expected.getDate();
+                }},
               plain: true,
               appendTo: '#dialog'
             });
