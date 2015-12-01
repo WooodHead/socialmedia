@@ -11,9 +11,9 @@
         templateUrl: 'views/calendar',
         controller: 'CalendarCtrl',
         controllerAs: 'calendar',
-        // resolve: {
-        //   channels: function(channelsService) { return channelsService.get().$promise; }
-        // }
+        resolve: {
+          channels: function(channelsService) { return channelsService.get().$promise; }
+        }
       })
       .when('/channels', createCrudRest('channelsService', 'channelService'))
       .when('/countries', createCrudRest('countriesService', 'countryService'))

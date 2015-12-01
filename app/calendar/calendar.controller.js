@@ -3,12 +3,14 @@
     .module('SocialMedia.Calendar')
     .controller('CalendarCtrl', CalendarCtrl);
 
-  function CalendarCtrl($routeParams, $location, itemsService, socket, uiCalendarConfig, ngDialog) {
+  function CalendarCtrl($routeParams, $location, itemsService, channels, socket, uiCalendarConfig, ngDialog) {
     var vm = this;
 
     vm.networks = [{ name: 'Facebook' }, { name:'Twitter' }];
     vm.networks.forEach(function(network) { network.ticked = true; });
-    vm.networkClick = function(network) {
+    vm.channels = channels;
+    vm.channels.forEach(function(channel) { channel.ticked = true; });
+    vm.filterChange = function(network) {
       console.log(network);
       vm.filter.changed = true;
       uiCalendarConfig.calendars['itemsCalendar'].fullCalendar('refetchEvents');
@@ -79,6 +81,7 @@
             console.log('filter change');
           } else {
             // We already received the new item via the socket
+            console.log('cache');
             if(view === previousView &&
                 (view === 'month' && start.month() === cachedMonth ||
                 view === 'basicWeek' && start.isoWeek() === cachedWeek)) {
@@ -109,7 +112,8 @@
               $gte: start.format('YYYY-MM-DD'),
               $lte: end.format('YYYY-MM-DD')
             },
-            'content.network': { $in: vm.filter.networks.map(x => x.name) }
+            'content.network': { $in: vm.filter.networks.map(x => x.name) },
+            channels: vm.filter.channels
           };
 
           vm.query = query;
@@ -128,26 +132,45 @@
             console.error(err);
           });
 
-          switch (view) {
-            case 'month':
-              socket.on('items:month:' + start.month() + ':new', onNewItem);
-              socket.on('items:month:' + start.month() + ':edit', onItemUpdate);
-              socket.on('items:month:' + start.month() + ':delete', onItemDelete);
-              break;
-            case 'basicWeek':
-              socket.on('items:week:' + start.isoWeek() + ':new', onNewItem);
-              socket.on('items:week:' + start.isoWeek() + ':edit', onItemUpdate);
-              socket.on('items:week:' + start.isoWeek() + ':delete', onItemDelete);
-              break;
+          if(!vm.filter.changed) {
+            switch (view) {
+              case 'month':
+                socket.on('items:month:' + start.month() + ':new', onNewItem);
+                socket.on('items:month:' + start.month() + ':edit', onItemUpdate);
+                socket.on('items:month:' + start.month() + ':delete', onItemDelete);
+                break;
+              case 'basicWeek':
+                socket.on('items:week:' + start.isoWeek() + ':new', onNewItem);
+                socket.on('items:week:' + start.isoWeek() + ':edit', onItemUpdate);
+                socket.on('items:week:' + start.isoWeek() + ':delete', onItemDelete);
+                break;
+            }
           }
         }
       }];
     };
 
     function filterItem(item) {
+      return filterNetwork(item) && filterChannels(item);
+    };
+
+    function filterNetwork(item) {
       for (var i = 0; i < vm.filter.networks.length; i++) {
         if(vm.filter.networks[i].name === item.content.network)
           return true;
+      }
+
+      return false;
+    };
+
+    function filterChannels(item) {
+      console.log(item, vm.filter.channels);
+      for (var i = 0; i < vm.filter.networks.length; i++) {
+        for (var k = 0; k < item.channels.length; k++) {
+          var id = typeof(item.channels[k]) === 'object' ? item.channels[k]._id : item.channels[k];
+          if(vm.filter.channels[i]._id === id)
+            return true;
+        }
       }
 
       return false;
