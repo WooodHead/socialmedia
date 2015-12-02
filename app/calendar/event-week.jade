@@ -1,0 +1,5 @@
+div(ng-attr-id='{{item._id}}')
+  span(ng-bind='item.scheduled | date:\'HH:mm\'')
+  span(ng-bind='channels' style='padding-left: 4px')
+  img(ng-src='{{item.content.media.fileUrl}}' style='width: 100%')
+  span.message(ng-bind='item.content.message')

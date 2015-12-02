@@ -9,7 +9,7 @@ module.exports = {
         browser.refresh();
       },
       getEvent: function(id) { return browser.element(by.id(id)); },
-      getMessage: function(event) { return event.element(by.css('.fc-title')).getText(); }
+      getMessage: function(event) { return event.element(by.css('.message')).getText(); }
     };
   }
 };

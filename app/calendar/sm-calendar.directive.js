@@ -11,7 +11,7 @@
     };
   }
 
-  function CalendarCtrl($scope, $log, provider, $routeParams, channelsService, $location, itemsService, uiCalendarConfig, ngDialog) {
+  function CalendarCtrl($scope, $rootScope, $compile, $log, provider, $routeParams, channelsService, $location, itemsService, uiCalendarConfig, ngDialog) {
     var vm = this;
     var cachedItems = [];
     var cachedWeek = -1;
@@ -56,22 +56,22 @@
             right: ' today prev,next',
           },
           eventRender: function eventRender(event, element, view) {
-            element[0].id = event._id;
-            if (view.intervalUnit === 'week') {
-              element[0].innerHTML =
-                '<span style="margin-right: 6px">' + event.scheduled.getHours() + ':' + event.scheduled.getMinutes() + '</span>' +
-                '<span>' + event.channels.map(function(channel) { return channel.name; }).join(', ') + '</span>' +
-                '<img style="width: 100%" src="' + event.content.media.fileUrl + '"/>' +
-                '<span>' + event.content.message + '</span>';
-            }
+            element[0].innerHTML = '';
+
+            var html = '<ng-include src="\'views/calendar/event-week\'"/>';
+            var scope = $scope.$new(true);
+            scope.item = event;
+            scope.channels = event.channels.map(function(channel) { return channel.name }).join(', ');
+            var template = angular.element(html);
+            var linkFn = $compile(template);
+            element.append(linkFn(scope));
+
             return element;
           },
           eventClick: function eventClick(event) {
             ngDialog.open({
-              template:
-                '<div smi-view item="item" edit="true" style="display:flex;justify-content:center;align-items:center;"/>',
+              templateUrl: 'views/calendar/event-dialog',
               controller: function eventClickController($scope) { $scope.item = event; },
-              plain: true,
               disableAnimation: true,
               appendTo: '#dialog',
             });
@@ -97,9 +97,7 @@
           // Update the URL
           $location.update_path(datePath(start), true);
 
-          if (view === previousView &&
-              (view === 'month' && start.month() === cachedMonth ||
-              view === 'basicWeek' && start.isoWeek() === cachedWeek)) {
+          if (isSameView(start, view, previousView)) {
             return callback(provider.filter());
           }
 
@@ -134,6 +132,12 @@
           });
         },
       }];
+    }
+
+    function isSameView(start, view, previousView) {
+      return (view === previousView &&
+          (view === 'month' && start.month() === cachedMonth ||
+          view === 'basicWeek' && start.isoWeek() === cachedWeek));
     }
 
     function datePath(date) {
