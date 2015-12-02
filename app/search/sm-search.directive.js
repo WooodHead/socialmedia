@@ -20,8 +20,10 @@
       $scope.$on('search', function(event, data) { search(data.text); });
 
       function search(text) {
+        vm.loading = true;
         vm.results = itemsService.get({ query: { $text: { $search: text, }, }, },
           function(res) {
+            vm.loading = false;
             $location.search({ text: text });
           }
         );

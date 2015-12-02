@@ -7,10 +7,11 @@ div#sm-edit.card
       .text-danger.m-t(ng-show='vm.noChannels') Please select a channel
     div.card.text.m-t
       select#network.form-control(ng-model='vm.item.content.network')
+        option(disabled selected hidden value='') Network
         option(ng-repeat='network in vm.networks' value='{{network}}') {{network}}
       .text-danger.m-t(ng-show='vm.noNetwork') Please select a network
     div.card-text
-      textarea#message.form-control(ng-model='vm.item.content.message' rows=4)
+      textarea#message.form-control(ng-model='vm.item.content.message' rows=4 placeholder='Message')
     div#tags.card-text.m-t
       tags-input(ng-model='vm.item.tags')
     div#media.card-text.m-t

@@ -10,6 +10,7 @@
       scope: {
         item: '=',
         edit: '=',
+        next: '=',
       },
     };
   }
