@@ -1,3 +1,8 @@
+/**
+ * socker.io
+ *
+ * @namespace Factories
+ */
 (function() {
   angular
     .module('SocialMedia.Core')

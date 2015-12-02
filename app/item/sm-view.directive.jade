@@ -1,5 +1,5 @@
 .card(ng-class='item.content.network')
-  .card-header
+  .card-header(ng-attr-id='{{item._id}}')
     span(ng-hide='item._id') Message preview
     a(ng-show='item._id' href='#view/{{item._id}}') Message preview
     a.pull-right(ng-show='edit' href='#/edit/{{item._id}}')

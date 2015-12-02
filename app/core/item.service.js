@@ -1,3 +1,8 @@
+/**
+ * Creates the factories for interacting with the server
+ *
+ * @namespace Factories
+ */
 (function() {
   createRestifyResource('v1', 'item', 'items');
   createRestifyResource('v1', 'channel', 'channels');
@@ -6,6 +11,7 @@
   createRestifyResource('v1', 'city', 'cities');
   createRestifyResource('v1', 'language', 'languages');
 
+  // Connect to endpoints as defined by express-restify-mongoose
   function createRestifyResource(version, singular, plural) {
     angular
       .module('SocialMedia.Core')

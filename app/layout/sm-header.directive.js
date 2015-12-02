@@ -1,3 +1,10 @@
+/**
+ * Provides navigation links and search functionality
+ * Search is $location sensitive, as it either changes path to /search
+ * or broadcast the search text if the path is already /search.
+ *
+ * @namespace Directives
+ */
 (function() {
   angular
     .module('SocialMedia')

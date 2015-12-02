@@ -30,6 +30,10 @@ module.exports = {
       plural: true,
       lowercase: true,
       preDelete: function(req, res, next) {
+        // If the delete is successfull, the document is gone so
+        // we will not be emit, since we do no longer have it.
+        // So we retrieve it manually before the delete and stash it
+        // into the request, from where we will retrieve in postDelete.
         Item.findById(req.params.id, function(err, item) {
           if(err) return next(err);
           req.item = item;

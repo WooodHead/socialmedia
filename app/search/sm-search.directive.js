@@ -1,3 +1,9 @@
+/**
+ * Fetches and displays server-side filtered items.
+ * Listens on $scope for 'search' and reacts accordingly.
+ *
+ * @namespace Directives
+ */
 (function() {
   angular
     .module('SocialMedia')
@@ -12,7 +18,7 @@
       bindToController: true
     };
 
-    function smSearchCtrl($rootScope, $scope, $location, itemsService) {
+    function smSearchCtrl($scope, $location, itemsService) {
       var vm = this;
 
       search($location.search().text);
