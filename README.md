@@ -6,8 +6,6 @@
 * `$ bower install`
 * `$ node app.js`
 
-Start with `$ node app.js`.
-
 In order to ease deployment and to provide some default dummy data, I have deployed a mongoDB instance online and configured the application to connect to it. The alternative would have been to dump the database and provide instruction to restore it, or use a sort of mongoose plugin to import data when the application starts. If for some reason the server is down, please replace the address and the port in [line 19 of setup.js](https://github.com/sorin-davidoi/socialmedia/blob/master/setup.js#L19) with ```localhost``` (there will not be any dummy data, but it should work, provided that mongoDB is running).
 
 ## Backend
