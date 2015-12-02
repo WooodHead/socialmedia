@@ -1,9 +1,9 @@
 (function() {
   angular
     .module('SocialMedia.Calendar')
-    .factory('provider', provider);
+    .factory('syncer', syncer);
 
-  function provider(socket) {
+  function syncer(socket) {
     var config = {
       model: null,
       filter: null,

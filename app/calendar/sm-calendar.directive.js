@@ -11,7 +11,7 @@
     };
   }
 
-  function CalendarCtrl($scope, $rootScope, $compile, $log, provider, $routeParams, channelsService, $location, itemsService, uiCalendarConfig, ngDialog) {
+  function CalendarCtrl($scope, $rootScope, $compile, $log, syncer, $routeParams, channelsService, $location, itemsService, uiCalendarConfig, ngDialog) {
     var vm = this;
     var cachedItems = [];
     var cachedWeek = -1;
@@ -100,7 +100,7 @@
           $location.update_path(datePath(start), true);
 
           if (isSameView(start, view, previousView)) {
-            return callback(provider.filter());
+            return callback(syncer.filter());
           }
 
           // Fetch and cache the items
@@ -113,22 +113,22 @@
               },
             },
           }, function itemsServiceResolved(res) {
-            provider.removeSubscriptions(cachedWeek, cachedMonth);
+            syncer.removeSubscriptions(cachedWeek, cachedMonth);
             previousView = '';
             cachedMonth = cachedWeek = -1;
 
             cachedItems = res;
             previousView = view;
 
-            provider.initialize(cachedItems, vm.filter, refresh);
+            syncer.initialize(cachedItems, vm.filter, refresh);
 
-            if (view === 'month') provider.subscribeMonth(start.month());
-            if (view === 'basicWeek') provider.subscribeWeek(start.isoWeek());
+            if (view === 'month') syncer.subscribeMonth(start.month());
+            if (view === 'basicWeek') syncer.subscribeWeek(start.isoWeek());
 
             if (view === 'month') cachedMonth = start.month();
             else if (view === 'basicWeek') cachedWeek = start.isoWeek();
 
-            callback(provider.filter());
+            callback(syncer.filter());
           }, function itemsServiceError(err) {
             $log.error(err);
           });
