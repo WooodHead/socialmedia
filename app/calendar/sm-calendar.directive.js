@@ -56,15 +56,17 @@
             right: ' today prev,next',
           },
           eventRender: function eventRender(event, element, view) {
-            element[0].innerHTML = '';
+            if(view.intervalUnit === 'week') {
+              element[0].innerHTML = '';
 
-            var html = '<ng-include src="\'views/calendar/event-week\'"/>';
-            var scope = $scope.$new(true);
-            scope.item = event;
-            scope.channels = event.channels.map(function(channel) { return channel.name }).join(', ');
-            var template = angular.element(html);
-            var linkFn = $compile(template);
-            element.append(linkFn(scope));
+              var html = '<ng-include src="\'views/calendar/event-week\'"/>';
+              var scope = $scope.$new(true);
+              scope.item = event;
+              scope.channels = event.channels.map(function(channel) { return channel.name }).join(', ');
+              var template = angular.element(html);
+              var linkFn = $compile(template);
+              element.append(linkFn(scope));
+            }
 
             return element;
           },

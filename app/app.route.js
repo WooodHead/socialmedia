@@ -7,8 +7,9 @@
     $routeProvider
       .when('/publish/', { template: '<div sm-publish/>' })
       .when('/view/:id', { template: '<div sm-publish/>' })
-      .when('/edit/:id', { template: '<div sm-publish/>' })
+      .when('/edit/:id', { template: '<div sm-publish/>', })
       .when('/calendar/:year?/:month?/:day?', { template: '<div sm-calendar/>', })
+      .when('/search', { template: '<div sm-search/>', reloadOnSearch: false, })
       .when('/channels', createCrudRest('channelsService', 'channelService'))
       .when('/countries', createCrudRest('countriesService', 'countryService'))
       .when('/regions', createCrudRest('regionsService', 'regionService'))
