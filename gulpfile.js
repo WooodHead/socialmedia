@@ -40,8 +40,8 @@ gulp.task('test-client', ['start-testing-server'], function() {
 
 gulp.task('lint', function () {
   gulp
-    .src(['**/*.js','!node_modules/**'])
+    .src(['app/**/*.js'])
     .pipe(eslint())
-    .pipe(eslint.format())
+    .pipe(eslint.format('stylish'))
     .pipe(eslint.failAfterError());
 });

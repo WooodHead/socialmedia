@@ -59,7 +59,6 @@
           var languagesTick = setTicked(vm.geo.languages, vm.item.geo.languages);
 
           vm.geo.enabled = countriesTick || regionsTick || citiesTick || languagesTick;
-          console.log(countriesTick, regionsTick, citiesTick, languagesTick);
         }
       }
 

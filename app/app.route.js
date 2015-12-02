@@ -14,7 +14,8 @@
       .when('/countries', createCrudRest('countriesService', 'countryService'))
       .when('/regions', createCrudRest('regionsService', 'regionService'))
       .when('/cities', createCrudRest('citiesService', 'cityService'))
-      .when('/languages', createCrudRest('languagesService', 'languageService'));
+      .when('/languages', createCrudRest('languagesService', 'languageService'))
+      .otherwise({ redirectTo: '/calendar' });
   }
 
   function createCrudRest(pl, sg) {
