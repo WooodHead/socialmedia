@@ -1,4 +1,4 @@
-div#smi-edit.card
+div#sm-edit.card
   div.card-header Post a message
   form.card-block
     div.card-text
@@ -26,9 +26,9 @@ div#smi-edit.card
       input(type='time' ng-show='isScheduled' ng-model='vm.item.scheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
     div#geo.card-text.m-t
       label.btn.btn-secondary.btn-block
-        input(type='checkbox' ng-model='isGeo')
+        input(type='checkbox' ng-model='vm.geo.enabled')
         |  Geo-Targeting
-      div(ng-show='isGeo')
+      div(ng-show='vm.geo.enabled')
         div#countries.m-t(isteven-multi-select input-model='vm.geo.countries' output-model='vm.item.geo.countries'
           output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
           translation='vm.countriesText')

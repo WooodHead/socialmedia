@@ -1,25 +1,25 @@
 (function() {
   angular
     .module('SocialMedia')
-    .directive('smiEdit', smiEdit);
+    .directive('smEdit', smEdit);
 
-  function smiEdit() {
+  function smEdit() {
     return {
       restrict: 'A',
-      templateUrl: 'views/item/smi-edit.directive.jade',
+      templateUrl: 'views/item/sm-edit.directive.jade',
       scope: {
         item: '=',
         channels: '=',
         networks: '=',
         geo: '=',
       },
-      controller: SmiEditCtrl,
+      controller: SmEditCtrl,
       controllerAs: 'vm',
       bindToController: true,
     };
   }
 
-  function SmiEditCtrl($scope, $location, $log, itemsService, itemService, Upload) {
+  function SmEditCtrl($scope, $location, $log, itemsService, itemService, Upload) {
     var vm = this;
 
     // Form fields
@@ -96,6 +96,7 @@
     function prepareData() {
       if (vm.item.tags) { vm.item.tags = vm.item.tags.map(function(tag) { return tag.text; }); }
       if (vm.item.channels) { vm.item.channels = vm.item.channels.map(function(channel) { return channel._id; }); }
+      if (!vm.geo.enabled) { vm.geo = {}; }
     }
 
     function setNothingSelectedText(translation, text) {

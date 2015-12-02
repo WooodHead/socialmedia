@@ -52,10 +52,14 @@
         if (vm.item) {
           // HACK: Manually set the tick if the selected properties
           setTicked(vm.channels, vm.item.channels);
-          setTicked(vm.geo.countries, vm.item.geo.countries);
-          setTicked(vm.geo.regions, vm.item.geo.regions);
-          setTicked(vm.geo.cities, vm.item.geo.cities);
-          setTicked(vm.geo.languages, vm.item.geo.languages);
+
+          var countriesTick = setTicked(vm.geo.countries, vm.item.geo.countries);
+          var regionsTick = setTicked(vm.geo.regions, vm.item.geo.regions);
+          var citiesTick = setTicked(vm.geo.cities, vm.item.geo.cities);
+          var languagesTick = setTicked(vm.geo.languages, vm.item.geo.languages);
+
+          vm.geo.enabled = countriesTick || regionsTick || citiesTick || languagesTick;
+          console.log(countriesTick, regionsTick, citiesTick, languagesTick);
         }
       }
 
@@ -69,13 +73,17 @@
     }
 
     function setTicked(inputModel, outputModel) {
+      var ticked = false;
+
       inputModel.forEach(function iM(input) {
         outputModel.forEach(function oM(output) {
-          if (input._id === output._id) { input.ticked = true; }
+          if (input._id === output._id || input._id === output) {
+            ticked = input.ticked = true;
+          }
         });
       });
 
-      vm.finished = true;
+      return ticked;
     }
   }
 })();

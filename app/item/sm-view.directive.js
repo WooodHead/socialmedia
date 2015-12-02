@@ -1,12 +1,12 @@
 (function() {
   angular
     .module('SocialMedia')
-    .directive('smiView', smiView);
+    .directive('smView', smView);
 
-  function smiView() {
+  function smView() {
     return {
       restrict: 'A',
-      templateUrl: 'views/item/smi-view.directive.jade',
+      templateUrl: 'views/item/sm-view.directive.jade',
       scope: {
         item: '=',
         edit: '=',
