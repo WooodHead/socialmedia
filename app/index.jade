@@ -1,0 +1,62 @@
+doctype
+html(lang='en' ng-app='SocialMedia')
+  head
+      meta(charset='utf-8')
+      meta(name='viewport' content='width=device-width initial-scale=1')
+      meta(http-equiv='x-ua-compatible' content='ie=edge')
+      
+      title Social Media
+
+      //- Should use CDN in production
+      link(rel='stylesheet' href='tether/dist/css/tether.min.css')
+      link(rel='stylesheet' href='bootstrap/dist/css/bootstrap.min.css')
+      link(rel='stylesheet' href='fullcalendar/dist/fullcalendar.css')
+      link(rel='stylesheet' href='ng-tags-input/ng-tags-input.min.css')
+      link(rel='stylesheet' href='angular-xeditable/dist/css/xeditable.css')
+      link(rel='stylesheet' href='isteven-angular-multiselect/isteven-multi-select.css')
+      link(rel='stylesheet' href='ng-dialog/css/ngDialog.min.css')
+      link(rel='stylesheet' href='ng-dialog/css/ngDialog-theme-default.css')
+      link(rel='stylesheet' href='font-awesome/css/font-awesome.min.css')
+      
+      link(rel='stylesheet' href='stylesheets/style.css')
+    body
+      .container-fluid
+        .row
+          div(sm-header)
+        .row.m-t
+          ng-view
+
+      //- Should use CDN in production
+      script(src='jquery/dist/jquery.min.js')
+      script(src='tether/dist/js/tether.min.js')
+      script(src='bootstrap/dist/js/bootstrap.min.js')
+      script(src='angular/angular.min.js')
+      script(src='angular-route/angular-route.min.js')
+      script(src='angular-resource/angular-resource.min.js')
+      script(src='moment/min/moment.min.js')
+      script(src='angular-ui-calendar/src/calendar.js')
+      script(src='fullcalendar/dist/fullcalendar.min.js')
+      script(src='ng-file-upload/ng-file-upload-all.min.js')
+      script(src='ng-tags-input/ng-tags-input.min.js')
+      script(src='angular-xeditable/dist/js/xeditable.js')
+      script(src='isteven-angular-multiselect/isteven-multi-select.js')
+      script(src='angular-location-update/angular-location-update.min.js')
+      script(src='ng-dialog/js/ngDialog.min.js')
+      
+      //- Should be minified and concatenated in production
+      script(src='/socket.io/socket.io.js')
+      script(src='angular-socket-io/socket.min.js')
+      script(src='app.module.js')
+      script(src='app.route.js')
+      script(src='core/core.module.js')
+      script(src='core/item.service.js')
+      script(src='core/socket.service.js')
+      script(src='layout/sm-header.directive.js')
+      script(src='item/sm-view.directive.js')
+      script(src='item/sm-edit.directive.js')
+      script(src='calendar/calendar.module.js')
+      script(src='calendar/sm-calendar.directive.js')
+      script(src='calendar/syncer.service.js')
+      script(src='search/sm-search.directive.js')
+      script(src='publish/publish.module.js')
+      script(src='publish/sm-publish.directive.js')

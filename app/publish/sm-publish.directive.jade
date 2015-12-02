@@ -1,0 +1,8 @@
+.col-md-5.col-md-offset-1(ng-hide='publish.mode === "view"')
+  div(style='background:color: grey; display:flex;justify-content:center;align-items:center;height:600px' ng-hide='publish.fetched')
+    i.fa.fa-5x.fa-spinner.fa-spin
+  div(sm-edit item='publish.item' channels='publish.channels' networks='publish.networks' geo='publish.geo' isGeo='publish.isGeo' ng-show='publish.fetched')
+div(ng-class="{'col-md-5': publish.mode !== 'view', 'col-md-4 col-md-offset-4': publish.mode === 'view'}")
+  div(style='background:color: grey; display:flex;justify-content:center;align-items:center;height:400px' ng-hide='publish.fetched')
+    i.fa.fa-5x.fa-spinner.fa-spin
+  div(sm-view item='publish.item' ng-show='publish.fetched' edit='publish.mode === "view"' next='publish.mode === "view"')

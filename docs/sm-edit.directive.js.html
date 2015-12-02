@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: item/sm-edit.directive.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: item/sm-edit.directive.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Provides a convenient way to edit an item
+ *
+ * @param {object} item - the item to edit
+ * @param {array} channels - channels to populate the select with
+ * @param {array} networks - networks to populate the select with
+ * @param {object} geo - contains countries, regions, cities and languages
+ * to populate the selects with
+ *
+ * @namespace Directives
+ */
+(function() {
+  angular
+    .module('SocialMedia')
+    .directive('smEdit', smEdit);
+
+  function smEdit() {
+    return {
+      restrict: 'A',
+      templateUrl: 'views/item/sm-edit.directive.jade',
+      scope: {
+        item: '=',
+        channels: '=',
+        networks: '=',
+        geo: '=',
+      },
+      controller: SmEditCtrl,
+      controllerAs: 'vm',
+      bindToController: true,
+    };
+  }
+
+  function SmEditCtrl($scope, $location, $log, itemsService, itemService, Upload) {
+    var vm = this;
+
+    // Form fields
+    vm.clearImage = clearImage;
+    vm.localLang = defaultMultiSelectLabels();
+    vm.channelsText = setNothingSelectedText(vm.channelsText, 'Channels');
+    vm.countriesText = setNothingSelectedText(vm.countriesText, 'Countries');
+    vm.regionsText = setNothingSelectedText(vm.regionsText, 'Regions');
+    vm.citiesText = setNothingSelectedText(vm.citiesText, 'Cities');
+    vm.languagesText = setNothingSelectedText(vm.languagesText, 'Languages');
+
+    // Send changes to server
+    vm.upload = upload;
+    vm.publish = publish;
+    vm.update = update;
+    vm.remove = remove;
+
+    vm.prepareData = prepareData;
+    vm.isScheduled = vm.item ? (new Date() &lt; vm.item.scheduled) : false;
+
+    function isValid() {
+      vm.noChannels = vm.item.channels.length === 0;
+      vm.noNetwork = !vm.item.content || !vm.item.content.network || vm.item.content.network.length === 0;
+      return (!vm.noChannels &amp;&amp; !vm.noNetwork);
+    }
+
+    function publish() {
+      if (!isValid()) return;
+      vm.prepareData();
+      vm.item = itemsService.save(vm.item, function itemSaved() {
+        vm.item.scheduled = new Date(vm.item.scheduled);
+        $location.path('view/' + vm.item._id);
+      }, function(err) {
+        $log.error(err);
+      });
+    }
+
+    function update() {
+      if (!isValid()) return;
+      vm.prepareData();
+      vm.item = itemService.update({ id: vm.item._id }, vm.item, function itemSaved() {
+        vm.item.scheduled = new Date(vm.item.scheduled);
+        $location.path('view/' + vm.item._id);
+      }, function(err) {
+        $log.error(err);
+      });
+    }
+
+    function upload(file) {
+      Upload.upload({
+        url: '/upload',
+        data: { item: file },
+      }).then(function uploadResolved(res) {
+        vm.item.content.media = {
+          fileName: res.data,
+          fileUrl: 'http://localhost:3000/images/' + res.data,
+        };
+      }, function uploadError(err) {
+        $log.error(err);
+      });
+    }
+
+    function clearImage() {
+      // TODO: Delete the image from the server
+      vm.item.content.media = { fileName: null, fileUrl: null, url: null };
+    }
+
+    function remove() {
+      itemService.delete({ id: vm.item._id });
+      $location.path('calendar');
+    }
+
+    /**
+     * Converts the data from the format given by the multiselect
+     * module to lists of ids, to be used as foreign keys
+     */
+    function prepareData() {
+      if (vm.item.tags) { vm.item.tags = vm.item.tags.map(function(tag) { return tag.text; }); }
+      if (vm.item.channels) { vm.item.channels = vm.item.channels.map(function(channel) { return channel._id; }); }
+      if (!vm.geo.enabled) { vm.geo = {}; }
+    }
+
+    function setNothingSelectedText(translation, text) {
+      translation = angular.fromJson(angular.toJson(vm.localLang));
+      translation.nothingSelected = text;
+      return translation;
+    }
+
+    function defaultMultiSelectLabels() {
+      return {
+        selectAll: 'Select all',
+        selectNone: 'Select none',
+        reset: 'Reset',
+        search: 'Search...',
+        nothingSelected: 'Nothing is selected',
+      };
+    }
+  }
+})();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Namespaces</h3><ul><li><a href="Directives.html">Directives</a></li><li><a href="Factories.html">Factories</a></li><li><a href="Modules.html">Modules</a></li><li><a href="Routes.html">Routes</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Wed Dec 02 2015 12:25:43 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

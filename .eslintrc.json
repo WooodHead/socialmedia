@@ -1,0 +1,6 @@
+{
+    "extends": "angular",
+    "env": {
+      "protractor": true
+    }
+}

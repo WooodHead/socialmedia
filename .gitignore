@@ -23,5 +23,15 @@ coverage
 build/Release
 
 # Dependency directory
-# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
 node_modules
+
+# Debug log from npm
+npm-debug.log
+
+# CSS and source-maps
+public/stylesheets/*.css
+public/stylesheets/*.css.map
+
+# Bower components
+bower_components

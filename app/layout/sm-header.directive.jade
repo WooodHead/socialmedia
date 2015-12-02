@@ -1,0 +1,10 @@
+nav.navbar.navbar-dark.bg-inverse(style='border-radius: 0')
+  a.navbar-brand(href='/') Social Media
+  ul.nav.navbar-nav
+    li.nav-item
+      a.nav-link(href='#/publish') Publish
+    li.nav-item
+      a.nav-link(href='#/calendar') Calendar
+  form.form-inline.navbar-form.pull-right(ng-submit='vm.search()')
+    input#searchInput.form-control(type='text' ng-model='vm.text' placeholder='Search')
+    button#searchButton.btn.btn-success-outline.m-l(type='submit') Search

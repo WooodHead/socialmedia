@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Index</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Index</h1>
+
+    
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1 id="socialmedia">socialmedia</h1>
+<ul>
+<li><code>$ git clone https://github.com/sorin-davidoi/socialmedia.git</code></li>
+<li><code>$ cd socialmedia</code></li>
+<li><code>$ npm install</code></li>
+<li><code>$ bower install</code></li>
+<li><code>$ node app.js</code></li>
+</ul>
+<p>Start with <code>$ node app.js</code>.</p>
+<p>In order to ease deployment and to provide some default dummy data, I have deployed a mongoDB instance online and configured the application to connect to it. The alternative would have been to dump the database and provide instruction to restore it, or use a sort of mongoose plugin to import data when the application starts. If for some reason the server is down, please replace the address and the port in <a href="https://github.com/sorin-davidoi/socialmedia/blob/master/setup.js#L19">line 19 of setup.js</a> with <code>localhost</code> (there will not be any dummy data, but it should work, provided that mongoDB is running).</p>
+<h2 id="backend">Backend</h2>
+<p>For the backend, I chose to use mongoDB with <a href="mongoosejs.com">mongoose</a>. I have created three document models: <code>Item</code>, <code>Channel</code>, and <code>Geo</code> (the same model is shared between <code>Country</code>, <code>Region</code>, <code>City</code> and <code>Language</code>). <code>Item</code> contains references to the other objects, similar to foreign keys in relational databases.</p>
+<p>In order to expose these objects easily via REST, I chose to use <a href="https://florianholzapfel.github.io/express-restify-mongoose/">express-restify-mongoose</a>. This package takes a mongoose model and creates a REST interface for it. For example, the API for <code>Item</code> is:</p>
+<ul>
+<li><code>GET /api/v1/items/count</code></li>
+<li><code>GET /api/v1/items</code></li>
+<li><code>PUT /api/v1/items</code></li>
+<li><code>POST /api/v1/items</code></li>
+<li><code>DELETE /api/v1/items</code></li>
+</ul>
+<ul>
+<li><code>GET /api/v1/items/:id</code></li>
+<li><code>GET /api/v1/items/:id/shallow</code></li>
+<li><code>PUT /api/v1/items/:id</code></li>
+<li><code>POST /api/v1/items/:id</code></li>
+<li><code>DELETE /api/v1/items/:id</code></li>
+</ul>
+<p>Another convenient thing with this package is that it also exposes the mongoDB query API, so server-side filtering is just a matter of passing the right parameters. Moreover, we can also use it to populate the documents, which is necessary since <code>Item</code> contains references to other documents.</p>
+<h2 id="frontend">Frontend</h2>
+<p>Implemented features:</p>
+<ul>
+<li>CRUD operations for <code>item</code></li>
+<li>Visualizing the items in a calendar</li>
+<li>Use <a href="socket.io">socket.io</a> to sync the database changes with the calendar</li>
+<li>Searching by <code>content.message</code></li>
+</ul>
+<p>The application is split into four modules (<code>SocialMedia</code>, <code>SocialMedia.Core</code>, <code>SocialMedia.Calendar</code> and <code>SocialMedia.Publish</code>), in order to make is easier to identify the main features and to and visualize dependencies. All interactions with the backend API take place in factories, which are then injected into the controllers. Since we are working with a REST API, I chose to use <code>$resource</code> manipulate the data.</p>
+<p>I have tried to further reduce the dependencies between controllers and data by fetching the data when routing, by resolving the promises using the <code>resolve</code> property of <code>$routeProvider</code>. This way, the controllers would have received the fetched data, and would not have had to interact directly with <code>$resource</code>. However, this causes the promises to be resolved before the actual page is even fetched, so we do not have the possibility to display a loading indicator. The users could have the impressing that the page was hanging, so I have decided to move the data fetching back into the controllers and to display a loading indicator.</p>
+<h3 id="socialmedia-core">SocialMedia.Core</h3>
+<p>Here we create the factories for each of the database models. In addition, the <code>syncer</code> factory provided synchronization between the calendar and the server via <code>socket.io</code>.</p>
+<h3 id="socialmedia-publish">SocialMedia.Publish</h3>
+<p>We use the <code>sm-publish</code> directive to provide functionality for creating, editing and deleting items. This directive makes use of two other directives:</p>
+<ul>
+<li><code>sm-edit</code> - basically a form for creating and editing an item; supports image upload on the server (note: the image is uploaded on the server, in <code>public/images</code>, and not to the database; <code>content.media.fileUrl</code> will then point to that file on <code>localhost</code>)</li>
+<li><code>sm-view</code> - provides preview for the item being edited. Its role is to provide instant feedback on how the item will look once published, depending on the social network used</li>
+</ul>
+<p><code>sm-publish</code> acts as a glue between these two directives: it passes the same object to both of them and makes sure <code>sm-edit</code> gets the data it needs (the list of channels, countries...).</p>
+<p>After an event is created or updated, the user is redirected to the item&#39;s page, allowing it to quickly share a direct link to it.</p>
+<h3 id="socialmedia-calendar">SocialMedia.Calendar</h3>
+<p>I have decided to use an Angular wraper for <a href="http://arshaw.com/fullcalendar/">Arshaw FullCalendar</a> called <a href="http://angular-ui.github.io/ui-calendar/">UI Calendar</a>. When the page loads, we fetch the initial data from the server (we perform server-side filtering, fetching just the data we need). We then set up <code>socket.io</code> to monitor changes for the data-range we are displaying. As <code>sm-calendar</code> is just for displaying the data and handling user interactions, the code that handles the synchronization between the fetched items and the server resides in the <code>syncer</code> factory. The syncing protocol is as follows:</p>
+<table>
+<thead>
+<tr>
+<th>W - number of the week</th>
+<th>M - number of the month</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item:week:W:new</code></td>
+<td><code>item:month:M:new</code></td>
+</tr>
+<tr>
+<td><code>item:week:W:edit</code></td>
+<td><code>item:month:M:edit</code></td>
+</tr>
+<tr>
+<td><code>item:week:W:delete</code></td>
+<td><code>item:month:M:delete</code></td>
+</tr>
+</tbody>
+</table>
+<p>The design of the protocol reflects the nature of the calendar: it can display events from a week or from a month.</p>
+<p><code>syncer</code> takes care of handing the changes and informs the calendar when a new render of the events is needed.</p>
+<p>The calendar makes sure to subscribe and unsubscribe for changes when the user changes the view (from month to week or between the same date ranges).</p>
+<p>On the backend side, I wrote hooks for &#39;post&#39; database events, where the corresponding signals are emitted.</p>
+<p>While <code>Ui Calendar</code> provides nice Angular integration, the fact that <code>FullCalendar</code> relies heavily on <code>jQuery</code> creates some difficulties. For instance, if we want to render the events ourselves (as I have done for the <code>week</code> view) by using a directive, we need to compile the directive ourselves since the event rendering happens outside of Angular&#39;s lifecycle.</p>
+<p>Clicking on an event opens a modal dialog for a quick preview, from when the user can proceed to the item&#39;s page or can start to edit it.</p>
+<p>Basic filtering of the displayed events is provided via two dropdowns: filtering by network and channels. The filtering is client-side, and only affects the events in the current view. This is also handled by <code>syncer</code>. Server-side filtering is provided by the search functionality.</p>
+<p>Navigating from one view to another changes the URL of the page without reloading the controller. This allows the user to share a direct link to the items published at a specific date.</p>
+<h3 id="search">Search</h3>
+<p>A search bar is located in the header, allowing for filtering item by the content of their message. Here, the URL also changes to reflect the search terms. The filtering here is server-side, and not in any way related to the filter implemented in the calendar.</p>
+<h2 id="routing-overview">Routing overview</h2>
+<p>Thanks to the modularity provided by directives, we are able to resolve three routes using one directive.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Directive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>          <code>/publish</code></td>
+<td><code>sm-publish</code></td>
+</tr>
+<tr>
+<td>          <code>/view/:id</code></td>
+<td><code>sm-publish</code></td>
+</tr>
+<tr>
+<td>          <code>/edit/:id</code></td>
+<td><code>sm-publish</code></td>
+</tr>
+<tr>
+<td><code>/calendar/:year/:month:/:day</code></td>
+<td><code>sm-calendar</code></td>
+</tr>
+<tr>
+<td>          <code>/search</code></td>
+<td><code>sm-search</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="tests">Tests</h2>
+<p>I have used <a href="https://angular.github.io/protractor/#/">Protractor</a> to write end-to-end tests, which can be found in the <code>test/client</code> directory and can be executed with <code>gulp test-client</code>. While they do not replace the need for unit-testing, they have helped me a lot making sure no regressions slip in when refactoring.</p>
+<p>I decided to test the most delicate part of the application: synching items via <code>socket.io</code>. There are only three tests, but they imply creating, editing and deleting items, which are also tested by extent.</p>
+<p>What have I tested:</p>
+<ul>
+<li>Calendar should sync via socket.io when a new item is created</li>
+<li>Calendar should sync via socket.io when a new item is updated</li>
+<li>Calendar should sync via socket.io when a new item is deleted</li>
+</ul>
+<h2 id="misc">Misc</h2>
+<p>I have tried to follow the best-practice guides regarding AngularJS and JavaScript, some of which are:</p>
+<ul>
+<li>All components are wrapped in <code>Immediately Invoked Function Expression</code>, to avoid variable collisions and polluting the global scope</li>
+<li>Folders-by-feature structure</li>
+<li>One component per file</li>
+<li>Fix all warning issued by <a href="http://eslint.org/">ESLint</a> using the <a href="https://www.npmjs.com/package/eslint-plugin-angular">angular plugin</a></li>
+</ul>
+<p>All the pages are responsive, with the exception of the calendar, which is non trivial to implement (should hide content based on the resolution).</p>
+<h2 id="things-i-did-not-address-">Things I did not address:</h2>
+<ul>
+<li>CSS and JavaScript concatenation and minification - while I have set up a framework for this for <a href="https://github.com/sorin-davidoi/pomodorojs-angular/blob/master/gulpfile.js">pomodorojs-angular</a> using gulp, I am not exactly sure how to apply it if the files are served via a web-server.</li>
+<li>browser compatibility - I have developed against the latest version of Chromium on Linux (Version 46.0.2490.86 (64-bit)), and ran the e2e tests using against the same configuration.</li>
+<li>looked into code coverage (it seems a bit tricky to set up Protractor for this, not as easy as using <code>istanbul</code> with <code>mocha</code> and <code>gulp</code> for backend testing)</li>
+<li>profiling the application</li>
+<li>error handling - for now, they are printed in the console using <code>$log</code></li>
+<li>backend testing - considering that most of the heavy work is done by <code>express-restify-mongoose</code>, I did not write any kind of tests (although the server and the database connection is tested indirectly by the end-to-end tests; the same goes for the <code>socket.io</code> code). express-restify-mongoose has a code coverage of <a href="https://coveralls.io/github/florianholzapfel/express-restify-mongoose?branch=master">97%</a>, is under active development and is build on established technologies, which leads me to believe that the implementation is quite solid.</li>
+<li>automation - setting up a complex build system</li>
+</ul>
+<h2 id="documentation-and-comments">Documentation and comments</h2>
+<p>All modules, factories, directives and routes have at least a short description and the meaning of their parameters. Unintuitive, or complex, pieces of code are accompanied by comments.</p>
+<p>The documentation can is located at <code>docs/index.html</code>, and can be generated using <code>gulp docs</code>.</p>
+<h2 id="credits">Credits</h2>
+<p>The images used as dummy data are taken from:</p>
+<ul>
+<li><a href="https://www.flickr.com/photos/inspirekelly/9827093964/">https://www.flickr.com/photos/inspirekelly/9827093964/</a></li>
+<li><a href="https://www.flickr.com/photos/zachinglis/5507648594/">https://www.flickr.com/photos/zachinglis/5507648594/</a></li>
+<li><a href="https://www.flickr.com/photos/75487768@N04/16120452980/">https://www.flickr.com/photos/75487768@N04/16120452980/</a></li>
+<li><a href="https://www.flickr.com/photos/dmitry-baranovskiy/2378867408">https://www.flickr.com/photos/dmitry-baranovskiy/2378867408</a></li>
+<li><a href="https://www.flickr.com/photos/landfeldt/2400107273">https://www.flickr.com/photos/landfeldt/2400107273</a></li>
+<li><a href="https://www.flickr.com/photos/soundsasimages/6086788031/">https://www.flickr.com/photos/soundsasimages/6086788031/</a></li>
+</ul>
+<h2 id="license">License</h2>
+<p>GNU General Public License v3.0</p>
+</article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Namespaces</h3><ul><li><a href="Directives.html">Directives</a></li><li><a href="Factories.html">Factories</a></li><li><a href="Modules.html">Modules</a></li><li><a href="Routes.html">Routes</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Wed Dec 02 2015 12:25:43 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

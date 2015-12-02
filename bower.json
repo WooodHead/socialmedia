@@ -1,0 +1,38 @@
+{
+  "name": "socialmedia",
+  "description": "Falcon Social interview project",
+  "main": "app.js",
+  "authors": [
+    "Sorin Adrian Robert Davidoi"
+  ],
+  "license": "GPL-3.0",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "angular-resource": "~1.4.8",
+    "angular-socket-io": "~0.7.0",
+    "ng-tags-input": "~3.0.0",
+    "angular-route": "~1.4.8",
+    "bootstrap": "v4-dev",
+    "tether": "~1.1.1",
+    "angular-ui-calendar": "~1.0.1",
+    "ng-file-upload": "~10.0.4",
+    "angular-xeditable": "~0.1.9",
+    "isteven-angular-multiselect": "angular-multi-select#~4.0.0",
+    "ng-dialog": "~0.5.6",
+    "font-awesome": "~4.5.0",
+    "angular-location-update": "~0.0.2"
+  },
+  "resolutions": {
+    "angular": "~1.4.8"
+  }
+}

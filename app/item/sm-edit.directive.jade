@@ -1,0 +1,49 @@
+div#sm-edit.card
+  div.card-header Post a message
+  form.card-block
+    div.card-text
+      div#channels(isteven-multi-select name='channels' input-model='vm.channels' output-model='vm.item.channels' button-label='name' item-label='name' tick-property='ticked'
+        translation='vm.channelsText')
+      .text-danger.m-t(ng-show='vm.noChannels') Please select a channel
+    div.card.text.m-t
+      select#network.form-control(ng-model='vm.item.content.network')
+        option(disabled selected hidden value='') Network
+        option(ng-repeat='network in vm.networks' value='{{network}}') {{network}}
+      .text-danger.m-t(ng-show='vm.noNetwork') Please select a network
+    div.card-text
+      textarea#message.form-control(ng-model='vm.item.content.message' rows=4 placeholder='Message')
+    div#tags.card-text.m-t
+      tags-input(ng-model='vm.item.tags')
+    div#media.card-text.m-t
+      button.btn.btn-block.btn-secondary(ngf-select='vm.upload($file)' ng-hide='vm.item.content.media.fileUrl') Add image
+      div(ng-show='vm.item.content.media.fileUrl')
+        img.card-img-top.m-b(ng-src='{{vm.item.content.media.fileUrl}}' style='height: 100px')
+        button.btn.btn-block.btn-primary(ng-click='vm.clearImage()') Remove image
+    div#scheduled.card-text.m-t
+      label.btn.btn-secondary.btn-block
+        input(type='checkbox' ng-model='isScheduled')
+        |  Schedule
+      input(type='date' ng-show='isScheduled' ng-model='vm.item.scheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
+      input(type='time' ng-show='isScheduled' ng-model='vm.item.scheduled' min='{{today | date:\'yyyy-MM-dd\'}}')
+    div#geo.card-text.m-t
+      label.btn.btn-secondary.btn-block
+        input(type='checkbox' ng-model='vm.geo.enabled')
+        |  Geo-Targeting
+      div(ng-show='vm.geo.enabled')
+        div#countries.m-t(isteven-multi-select input-model='vm.geo.countries' output-model='vm.item.geo.countries'
+          output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
+          translation='vm.countriesText')
+        div#regions.m-t(isteven-multi-select input-model='vm.geo.regions' output-model='vm.item.geo.regions'
+          output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
+          translation='vm.regionsText')
+        div#cities.m-t(isteven-multi-select input-model='vm.geo.cities' output-model='vm.item.geo.cities'
+          output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
+          translation='vm.citiesText')
+        div#languages.m-t(isteven-multi-select input-model='vm.geo.languages' output-model='vm.item.geo.languages'
+          output-properties='_id' button-label='name' item-label='name' tick-property='ticked'
+          translation='vm.languagesText')
+    div.card-text.m-t
+      button#update.btn.btn-block.btn-primary(type='button' ng-show='vm.item._id && isScheduled || vm.item._id && !isScheduled' ng-click='vm.update()') Update
+      button#schedule.btn.btn-block.btn-primary(type='button' ng-show='!vm.item._id && isScheduled' ng-click='vm.publish()') Schedule
+      button#publish.btn.btn-block.btn-primary(type='button' ng-show='!vm.item._id && !isScheduled' ng-click='vm.publish()') Publish
+      button#delete.btn.btn-block.btn-primary(type='button' ng-show='vm.item._id' ng-click='vm.remove()') Delete
